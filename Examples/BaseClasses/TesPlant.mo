@@ -28,22 +28,9 @@ model TesPlant
     dIns=1,
     nSeg=20)
     annotation (Placement(transformation(extent={{-168,4},{-148,24}})));
-  Buildings.Fluid.Sources.Boundary_pT bou1(redeclare package Medium =
-        MediumWater, nPorts=1)
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
-        rotation=180,
-        origin={200,-210})));
-  Buildings.Fluid.Sources.Boundary_pT bou2(redeclare package Medium =
-        MediumWater, nPorts=1)
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
-        rotation=180,
-        origin={196,100})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant conRea4(k=0.6)
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant conRea1(k=1)
     "Real inputs"
-    annotation (Placement(transformation(extent={{4,28},{24,48}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant conRea1(k=0.6)
-    "Real inputs"
-    annotation (Placement(transformation(extent={{38,134},{58,154}})));
+    annotation (Placement(transformation(extent={{-176,132},{-156,152}})));
   Buildings.Fluid.Actuators.Valves.TwoWayLinear val8(
     redeclare package Medium = MediumWater,
     m_flow_nominal=m_flow_nominal,
@@ -163,12 +150,22 @@ model TesPlant
         extent={{15,-15},{-15,15}},
         rotation=270,
         origin={95,-19})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput u
+    annotation (Placement(transformation(extent={{-240,40},{-200,80}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput pump_speed
+    annotation (Placement(transformation(extent={{-240,-124},{-200,-84}})));
+  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea
+    annotation (Placement(transformation(extent={{-166,86},{-146,106}})));
+  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea1(realTrue=0,
+      realFalse=1)
+    annotation (Placement(transformation(extent={{-212,22},{-192,42}})));
+  Modelica.Fluid.Interfaces.FluidPort_a port_a(redeclare package Medium =
+        MediumWater)
+    annotation (Placement(transformation(extent={{178,-238},{198,-218}})));
+  Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium =
+        MediumWater)
+    annotation (Placement(transformation(extent={{176,74},{196,94}})));
 equation
-  connect(conRea4.y, mov2.y) annotation (Line(points={{26,38},{34,38},{34,-2},{
-          14,-2},{14,-12}},
-                color={0,0,127}));
-  connect(conRea1.y, val4.y)
-    annotation (Line(points={{60,144},{86,144},{86,62}}, color={0,0,127}));
   connect(val7.port_b, tan.port_b) annotation (Line(points={{-134,-34},{-158,-34},
           {-158,4}}, color={0,127,255}));
   connect(val8.port_a, tan.port_a) annotation (Line(points={{-126,36},{-144,36},
@@ -203,8 +200,6 @@ equation
           -218},{28,-218},{28,-208},{22,-208}}, color={0,127,255}));
   connect(junDiv4.port_3, val2.port_a) annotation (Line(points={{97,-204},{97,
           -180},{96,-180},{96,-174}}, color={0,127,255}));
-  connect(bou1.ports[1], junDiv4.port_1) annotation (Line(points={{190,-210},{
-          150,-210},{150,-217},{110,-217}}, color={0,127,255}));
   connect(mov3.port_b, junConv2.port_3) annotation (Line(points={{26,-130},{50,
           -130},{50,-122},{78,-122},{78,-119}}, color={0,127,255}));
   connect(val2.port_b, junConv2.port_1) annotation (Line(points={{96,-154},{96,
@@ -223,10 +218,40 @@ equation
           {88,106},{94,106}}, color={0,127,255}));
   connect(junConv.port_3, val4.port_b) annotation (Line(points={{104,96},{104,
           78},{98,78},{98,72}}, color={0,127,255}));
-  connect(junConv.port_2, bou2.ports[1]) annotation (Line(points={{114,106},{
-          132,106},{132,100},{186,100}}, color={0,127,255}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-        coordinateSystem(preserveAspectRatio=false)),
+  connect(pump_speed, mov2.y) annotation (Line(points={{-220,-104},{0,-104},{0,
+          -58},{30,-58},{30,-4},{14,-4},{14,-12}}, color={0,0,127}));
+  connect(pump_speed, mov1.y) annotation (Line(points={{-220,-104},{0,-104},{0,
+          -58},{16,-58},{16,-66}}, color={0,0,127}));
+  connect(pump_speed, mov3.y) annotation (Line(points={{-220,-104},{16,-104},{
+          16,-118}}, color={0,0,127}));
+  connect(u, booToRea.u) annotation (Line(points={{-220,60},{-178,60},{-178,96},
+          {-168,96}}, color={255,0,255}));
+  connect(u, booToRea1.u) annotation (Line(points={{-220,60},{-220,32},{-214,32}},
+        color={255,0,255}));
+  connect(conRea1.y, val8.y) annotation (Line(points={{-154,142},{-116,142},{
+          -116,48}}, color={0,0,127}));
+  connect(conRea1.y, val7.y) annotation (Line(points={{-154,142},{-154,-19.6},{
+          -122,-19.6}}, color={0,0,127}));
+  connect(booToRea.y, val3.y)
+    annotation (Line(points={{-144,96},{-36,96},{-36,18}}, color={0,0,127}));
+  connect(booToRea.y, val4.y) annotation (Line(points={{-144,96},{-36,96},{-36,
+          62},{86,62}}, color={0,0,127}));
+  connect(booToRea1.y, val1.y) annotation (Line(points={{-190,32},{-186,32},{
+          -186,0},{-146,0},{-146,-200},{-40,-200},{-40,-180}}, color={0,0,127}));
+  connect(booToRea1.y, val2.y) annotation (Line(points={{-190,32},{-146,32},{
+          -146,-200},{84,-200},{84,-164}}, color={0,0,127}));
+  connect(booToRea.y, val5.y) annotation (Line(points={{-144,96},{-118,96},{
+          -118,90},{-80,90},{-80,-272},{12,-272},{12,-220}}, color={0,0,127}));
+  connect(booToRea1.y, val6.y) annotation (Line(points={{-190,32},{-92,32},{-92,
+          108},{0,108},{0,90}}, color={0,0,127}));
+  connect(junConv.port_2, port_b) annotation (Line(points={{114,106},{170,106},
+          {170,84},{186,84}}, color={0,127,255}));
+  connect(junDiv4.port_1, port_a) annotation (Line(points={{110,-217},{110,-218},
+          {180,-218},{180,-228},{188,-228}}, color={0,127,255}));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,
+            -260},{180,100}})),                                  Diagram(
+        coordinateSystem(preserveAspectRatio=false, extent={{-200,-260},{180,
+            100}})),
     experiment(
       StopTime=86400,
       Interval=60,
