@@ -56,31 +56,31 @@ model TesPlant
   Buildings.Fluid.FixedResistances.Junction junConv(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,1},
-    dp_nominal={1,-1,1})
+    dp_nominal={0,0,0})
     annotation (Placement(transformation(extent={{94,96},{114,116}})));
   Buildings.Fluid.FixedResistances.Junction junDiv(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,-1},
-    dp_nominal={1,-1,-1})
+    dp_nominal={0,0,0})
     annotation (Placement(transformation(extent={{-68,66},{-48,86}})));
   Buildings.Fluid.FixedResistances.Junction junDiv1(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,-1},
-    dp_nominal={1,-1,-1}) annotation (Placement(transformation(
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{12,-12},{-12,12}},
         rotation=90,
         origin={-48,-26})));
   Buildings.Fluid.FixedResistances.Junction junDiv2(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,-1},
-    dp_nominal={1,-1,-1}) annotation (Placement(transformation(
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{12,-12},{-12,12}},
         rotation=90,
         origin={-48,-78})));
   Buildings.Fluid.FixedResistances.Junction junDiv3(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,-1},
-    dp_nominal={1,-1,-1}) annotation (Placement(transformation(
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{12,-12},{-12,12}},
         rotation=90,
         origin={-50,-128})));
@@ -104,7 +104,7 @@ model TesPlant
   Buildings.Fluid.FixedResistances.Junction junConv1(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,1},
-    dp_nominal={1,-1,1}) annotation (Placement(transformation(
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={-52,-224})));
@@ -125,32 +125,33 @@ model TesPlant
   Buildings.Fluid.FixedResistances.Junction junDiv4(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,-1},
-    dp_nominal={1,-1,-1}) annotation (Placement(transformation(
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{13,13},{-13,-13}},
         rotation=0,
         origin={97,-217})));
   Buildings.Fluid.FixedResistances.Junction junConv2(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,1},
-    dp_nominal={1,-1,1}) annotation (Placement(transformation(
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{15,-15},{-15,15}},
         rotation=270,
         origin={93,-119})));
   Buildings.Fluid.FixedResistances.Junction junConv3(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,1},
-    dp_nominal={1,-1,1}) annotation (Placement(transformation(
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{15,-15},{-15,15}},
         rotation=270,
         origin={97,-69})));
   Buildings.Fluid.FixedResistances.Junction junConv4(
     redeclare package Medium = MediumWater,
     m_flow_nominal={1,-1,1},
-    dp_nominal={1,-1,1}) annotation (Placement(transformation(
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{15,-15},{-15,15}},
         rotation=270,
         origin={95,-19})));
-  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput u
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanInput chargeMode
+    "true=charging, false=discharging"
     annotation (Placement(transformation(extent={{-240,40},{-200,80}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput pump_speed
     annotation (Placement(transformation(extent={{-240,-124},{-200,-84}})));
@@ -224,10 +225,10 @@ equation
           -58},{16,-58},{16,-66}}, color={0,0,127}));
   connect(pump_speed, mov3.y) annotation (Line(points={{-220,-104},{16,-104},{
           16,-118}}, color={0,0,127}));
-  connect(u, booToRea.u) annotation (Line(points={{-220,60},{-178,60},{-178,96},
-          {-168,96}}, color={255,0,255}));
-  connect(u, booToRea1.u) annotation (Line(points={{-220,60},{-220,32},{-214,32}},
-        color={255,0,255}));
+  connect(chargeMode, booToRea.u) annotation (Line(points={{-220,60},{-178,60},{
+          -178,96},{-168,96}}, color={255,0,255}));
+  connect(chargeMode, booToRea1.u) annotation (Line(points={{-220,60},{-220,32},
+          {-214,32}}, color={255,0,255}));
   connect(conRea1.y, val8.y) annotation (Line(points={{-154,142},{-116,142},{
           -116,48}}, color={0,0,127}));
   connect(conRea1.y, val7.y) annotation (Line(points={{-154,142},{-154,-19.6},{

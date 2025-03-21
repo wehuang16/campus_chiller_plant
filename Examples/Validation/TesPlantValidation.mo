@@ -34,8 +34,8 @@ equation
           66,16.4},{66,36},{72,36}}, color={0,127,255}));
   connect(sin.y, tesPlant.pump_speed) annotation (Line(points={{-88,-10},{-40,
           -10},{-40,-2.4},{-30,-2.4}}, color={0,0,127}));
-  connect(booPul.y, tesPlant.u) annotation (Line(points={{-122,32},{-38,32},{
-          -38,14},{-30,14}}, color={255,0,255}));
+  connect(booPul.y, tesPlant.chargeMode) annotation (Line(points={{-122,32},{
+          -38,32},{-38,14},{-30,14}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)),
     experiment(
