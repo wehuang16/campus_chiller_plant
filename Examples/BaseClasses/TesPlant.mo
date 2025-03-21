@@ -166,6 +166,17 @@ model TesPlant
   Modelica.Fluid.Interfaces.FluidPort_b port_b(redeclare package Medium =
         MediumWater)
     annotation (Placement(transformation(extent={{176,74},{196,94}})));
+  Buildings.Controls.OBC.CDL.Reals.Hysteresis hys(uLow=273.15 + 10, uHigh=
+        273.15 + 25)
+    annotation (Placement(transformation(extent={{242,-38},{262,-18}})));
+  Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temperatureSensor
+    annotation (Placement(transformation(extent={{52,8},{72,28}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput tesStatus
+    "1=has capacity; 0=fully discharged" annotation (Placement(transformation(
+          extent={{180,-98},{220,-58}}), iconTransformation(extent={{180,-98},{
+            220,-58}})));
+  Buildings.Controls.OBC.CDL.Logical.Not not1
+    annotation (Placement(transformation(extent={{280,-38},{300,-18}})));
 equation
   connect(val7.port_b, tan.port_b) annotation (Line(points={{-134,-34},{-158,-34},
           {-158,4}}, color={0,127,255}));
@@ -249,6 +260,14 @@ equation
           {170,84},{186,84}}, color={0,127,255}));
   connect(junDiv4.port_1, port_a) annotation (Line(points={{110,-217},{110,-218},
           {180,-218},{180,-228},{188,-228}}, color={0,127,255}));
+  connect(temperatureSensor.T, hys.u) annotation (Line(points={{73,18},{230,18},
+          {230,-28},{240,-28}}, color={0,0,127}));
+  connect(temperatureSensor.port, tan.heaPorVol[10]) annotation (Line(points={{
+          52,18},{36,18},{36,20},{-158,20},{-158,13.985}}, color={191,0,0}));
+  connect(hys.y, not1.u)
+    annotation (Line(points={{264,-28},{278,-28}}, color={255,0,255}));
+  connect(not1.y, tesStatus) annotation (Line(points={{302,-28},{306,-28},{306,
+          -78},{200,-78}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,
             -260},{180,100}})),                                  Diagram(
         coordinateSystem(preserveAspectRatio=false, extent={{-200,-260},{180,

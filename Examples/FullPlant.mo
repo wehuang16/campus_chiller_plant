@@ -50,13 +50,6 @@ parameter Integer numChi=2
     "Nominal pressure difference of the cooling tower valve";
   BaseClasses.TesPlant tesPlant(m_flow_nominal=mCHWSec_flow_nominal)
     annotation (Placement(transformation(extent={{36,-2},{78,-40}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Sin sin(
-    amplitude=0.25,
-    freqHz=1/10000,
-    offset=0.75)
-    annotation (Placement(transformation(extent={{-12,-44},{8,-24}})));
-  Buildings.Controls.OBC.CDL.Logical.Sources.Constant con(k=true)
-    annotation (Placement(transformation(extent={{-46,-2},{-26,18}})));
   replaceable BaseClasses.ElectricChillerParallel                  pla(
     perChi=perChi,
     dTApp=dTApp,
@@ -107,17 +100,14 @@ parameter Integer numChi=2
         "modelica://Buildings/Resources/weatherdata/USA_CA_San.Francisco.Intl.AP.724940_TMY3.mos"))
     "Weather data"
     annotation (Placement(transformation(extent={{-160,86},{-140,106}})));
-  Modelica.Blocks.Sources.BooleanConstant on
-    "On signal of the plant"
-    annotation (Placement(transformation(extent={{-160,46},{-140,66}})));
   Modelica.Blocks.Sources.Constant TCHWSupSet(k=TCHWSet)
     "Chilled water supply temperature setpoint"
     annotation (Placement(transformation(extent={{-164,-114},{-144,-94}})));
   Buildings.Fluid.MixingVolumes.MixingVolume vol(
     nPorts=2,
-    redeclare package Medium = Medium,
+    redeclare package Medium = MediumWater,
     m_flow_nominal=pla.numChi*mCHW_flow_nominal,
-    V=0.5,
+    V=20,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial) "Mixing volume"
     annotation (Placement(transformation(extent={{176,112},{196,132}})));
   Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow fixHeaFlo(T_ref=
@@ -125,7 +115,7 @@ parameter Integer numChi=2
     "Fixed heat flow rate"
     annotation (Placement(transformation(extent={{-100,126},{-80,146}})));
   Buildings.Fluid.FixedResistances.PressureDrop res(
-    redeclare package Medium = Medium,
+    redeclare package Medium = MediumWater,
     m_flow_nominal=pla.numChi*mCHW_flow_nominal,
     dp_nominal(displayUnit="kPa") = 60000) "Flow resistance"
     annotation (Placement(transformation(extent={{-34,-104},{-54,-84}})));
@@ -156,20 +146,27 @@ parameter Integer numChi=2
         extent={{-13,-13},{13,13}},
         rotation=0,
         origin={29,67})));
+  BaseClasses.chiller_tes_plant_controller chiller_tes_plant_controller
+    annotation (Placement(transformation(extent={{-2,150},{18,170}})));
+  Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable intTimTab(
+    table=[0,1; 8,2; 16,3; 21,1; 24,1],
+    timeScale=3600,
+    period=86400)
+    annotation (Placement(transformation(extent={{-256,154},{-236,174}})));
+  Buildings.Controls.OBC.CDL.Routing.RealScalarReplicator reaScaRep(nout=numChi)
+    annotation (Placement(transformation(extent={{-74,76},{-54,96}})));
+  Buildings.Controls.OBC.CDL.Reals.Hysteresis hys(uLow=273.15 + 20, uHigh=
+        273.15 + 30)
+    annotation (Placement(transformation(extent={{170,164},{190,184}})));
+  Modelica.Blocks.Sources.RealExpression realExpression(y=vol.heatPort.T)
+    annotation (Placement(transformation(extent={{112,150},{132,170}})));
 equation
-  connect(sin.y, tesPlant.pump_speed) annotation (Line(points={{10,-34},{26,-34},
-          {26,-18.4667},{33.7895,-18.4667}},
-                                color={0,0,127}));
   connect(fixHeaFlo.port,vol.heatPort)
     annotation (Line(points={{-80,136},{170,136},{170,122},{176,122}},
                                                               color={191,0,0}));
   connect(res.port_b,pla. port_aSerCoo) annotation (Line(points={{-54,-94},{
           -116,-94},{-116,54.6667},{-110,54.6667}},
                                                color={0,127,255}));
-  connect(on.y,pla.on)
-    annotation (Line(points={{-139,56},{-138,56},{-138,63.3333},{-110.667,
-          63.3333}},
-      color={255,0,255}));
   connect(weaDat.weaBus,pla.weaBus)
     annotation (Line(points={{-140,96},{-100,96},{-100,66}},
       color={255,204,51}));
@@ -179,9 +176,6 @@ equation
   connect(pla.TCHWSupSet,TCHWSupSet. y) annotation (Line(points={{-110.667,
           61.3333},{-134,61.3333},{-134,-104},{-143,-104}},
                                                color={0,0,127}));
-  connect(con.y, tesPlant.chargeMode) annotation (Line(points={{-24,8},{24,8},{
-          24,-35.7778},{33.7895,-35.7778}},
-                              color={255,0,255}));
   connect(pla.port_bSerCoo, pumCHWSec.port_a) annotation (Line(points={{-90,
           54.6667},{-62,54.6667},{-62,66},{-52,66}}, color={0,127,255}));
   connect(junDiv.port_1, pumCHWSec.port_b)
@@ -196,6 +190,31 @@ equation
           -38.3111},{84,-38.3111},{84,-80},{64,-80},{64,-86}}, color={0,127,255}));
   connect(jonConv.port_2, res.port_a) annotation (Line(points={{52,-98},{-28,
           -98},{-28,-94},{-34,-94}}, color={0,127,255}));
+  connect(intTimTab.y[1], chiller_tes_plant_controller.systemCommand)
+    annotation (Line(points={{-234,164},{-14,164},{-14,165.4},{-4,165.4}},
+        color={255,127,0}));
+  connect(chiller_tes_plant_controller.chillerOn, pla.on) annotation (Line(
+        points={{20,166},{22,166},{22,112},{-112,112},{-112,63.3333},{-110.667,
+          63.3333}}, color={255,0,255}));
+  connect(chiller_tes_plant_controller.tesMode, tesPlant.chargeMode)
+    annotation (Line(points={{20,156.6},{26,156.6},{26,-35.7778},{33.7895,
+          -35.7778}}, color={255,0,255}));
+  connect(chiller_tes_plant_controller.tesPumpSpeed, tesPlant.pump_speed)
+    annotation (Line(points={{20,152.2},{44,152.2},{44,-18.4667},{33.7895,
+          -18.4667}}, color={0,0,127}));
+  connect(reaScaRep.y, pumCHWSec.u) annotation (Line(points={{-52,86},{-44,86},
+          {-44,102},{-84,102},{-84,70},{-54,70}}, color={0,0,127}));
+  connect(chiller_tes_plant_controller.chillerPumpSpeed, reaScaRep.u)
+    annotation (Line(points={{20,161.8},{32,161.8},{32,118},{-76,118},{-76,86}},
+        color={0,0,127}));
+  connect(realExpression.y, hys.u) annotation (Line(points={{133,160},{160,160},
+          {160,174},{168,174}}, color={0,0,127}));
+  connect(hys.y, chiller_tes_plant_controller.loadRequest) annotation (Line(
+        points={{192,174},{200,174},{200,144},{-12,144},{-12,160},{-4,160}},
+        color={255,0,255}));
+  connect(tesPlant.tesStatus, chiller_tes_plant_controller.tesStatus)
+    annotation (Line(points={{80.2105,-21.2111},{110,-21.2111},{110,130},{-4,
+          130},{-4,153}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
 end FullPlant;
