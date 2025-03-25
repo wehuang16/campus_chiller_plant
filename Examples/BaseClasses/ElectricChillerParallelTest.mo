@@ -1,5 +1,5 @@
 within campus_chiller_plant.Examples.BaseClasses;
-model ElectricChillerParallel "District cooling plant model"
+model ElectricChillerParallelTest "District cooling plant model"
   extends Buildings.DHC.Plants.BaseClasses.PartialPlant(
     have_eleCoo=true,
     have_pum=true,
@@ -172,6 +172,16 @@ model ElectricChillerParallel "District cooling plant model"
     final num=numChi)
     "Condenser water pumps"
     annotation (Placement(transformation(extent={{60,160},{80,180}})));
+  Buildings.Fluid.Actuators.Valves.TwoWayEqualPercentage valByp(
+    redeclare final package Medium=Medium,
+    final allowFlowReversal=false,
+    final m_flow_nominal=mCHW_flow_nominal,
+    final dpValve_nominal=dpCHWPumVal_nominal,
+    final use_inputFilter=true,
+    riseTime=60)
+    "Chilled water bypass valve"
+    annotation (Placement(transformation(extent={{10,10},{-10,-10}},
+      rotation=0,origin={-30,-70})));
   Buildings.Fluid.Sensors.TemperatureTwoPort senTCHWSup(
     redeclare final package Medium=Medium,
     final m_flow_nominal=mCHW_flow_nominal)
@@ -198,7 +208,7 @@ model ElectricChillerParallel "District cooling plant model"
   Buildings.Fluid.Sources.Boundary_pT expTanCHW(
     redeclare final package Medium=Medium,
     p=300000,
-    nPorts=2)
+    nPorts=1)
     "Chilled water expansion tank"
     annotation (Placement(transformation(extent={{-108,-26},{-88,-6}})));
   Buildings.Fluid.Sensors.MassFlowRate senMasFlo(
@@ -220,6 +230,22 @@ model ElectricChillerParallel "District cooling plant model"
     nin=2)
     "Total cooling power"
     annotation (Placement(transformation(extent={{340,230},{360,250}})));
+  Buildings.Fluid.FixedResistances.Junction joiCHWRet(
+    redeclare final package Medium=Medium,
+    final m_flow_nominal=mCHW_flow_nominal .* {1,-1,1},
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    dp_nominal={0,0,0})
+    "Flow joint for the chilled water return side"
+    annotation (Placement(transformation(extent={{-10,10},{10,-10}},
+      rotation=90, origin={-80,-40})));
+  Buildings.Fluid.FixedResistances.Junction splCHWSup(
+    redeclare final package Medium=Medium,
+    final m_flow_nominal=mCHW_flow_nominal .* {1,-1,-1},
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    dp_nominal={0,0,0})
+    "Flow splitter for the chilled water supply side"
+    annotation (Placement(transformation(extent={{10,-10},{-10,10}},
+      rotation=90,origin={120,-42})));
   Buildings.DHC.Plants.Cooling.Controls.ChilledWaterBypass chiBypCon(
     final numChi=numChi,
     final mMin_flow=mMin_flow,
@@ -233,6 +259,8 @@ model ElectricChillerParallel "District cooling plant model"
         extent={{10,-10},{-10,10}},
         rotation=90,
         origin={120,20})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant    con(k=0)
+    annotation (Placement(transformation(extent={{-72,-186},{-52,-166}})));
 protected
   final parameter Medium.ThermodynamicState sta_default=Medium.setState_pTX(
     T=Medium.T_default,
@@ -311,6 +339,8 @@ equation
   connect(mulChiSys.P,totPCoo.u[1:2])
     annotation (Line(points={{39,52},{20,52},{20,240.5},{338,240.5}},
       color={0,0,127}));
+  connect(splCHWSup.port_3,senTCHWSup.port_a)
+    annotation (Line(points={{130,-42},{130,-40},{140,-40}},color={0,127,255}));
   connect(senTCHWRet.T,chiStaCon.TChiWatRet)
     annotation (Line(points={{-260,-29},{-260,209.75},{-201.25,209.75}},
       color={0,0,127}));
@@ -323,18 +353,26 @@ equation
   connect(chiStaCon.y,chiBypCon.chiOn)
     annotation (Line(points={{-179.375,210},{-160,210},{-160,-145},{-122,-145}},
       color={255,0,255}));
+  connect(senMasFlo.port_b, joiCHWRet.port_3)
+    annotation (Line(points={{-210,-40},{-90,-40}}, color={0,127,255}));
+  connect(valByp.port_b, joiCHWRet.port_1)
+    annotation (Line(points={{-40,-70},{-80,-70},{-80,-50}}, color={0,127,255}));
   connect(senMasFloCHW.m_flow, chiBypCon.mFloChi) annotation (Line(points={{109,
           20},{-140,20},{-140,-155},{-122,-155}}, color={0,0,127}));
-  connect(expTanCHW.ports[1], pumCHW.port_a) annotation (Line(points={{-88,-17},
-          {-80,-17},{-80,44},{-52,44}}, color={0,127,255}));
+  connect(valByp.port_a, splCHWSup.port_2) annotation (Line(points={{-20,-70},{
+          120,-70},{120,-52}}, color={0,127,255}));
+  connect(joiCHWRet.port_2, pumCHW.port_a)
+    annotation (Line(points={{-80,-30},{-80,44},{-52,44}}, color={0,127,255}));
+  connect(expTanCHW.ports[1], pumCHW.port_a) annotation (Line(points={{-88,-16},
+          {-80,-16},{-80,44},{-52,44}}, color={0,127,255}));
   connect(mulChiSys.port_b2, senMasFloCHW.port_a)
     annotation (Line(points={{60,44},{120,44},{120,30}}, color={0,127,255}));
+  connect(senMasFloCHW.port_b, splCHWSup.port_1)
+    annotation (Line(points={{120,10},{120,-32}}, color={0,127,255}));
   connect(chiOn.y, pumCHW.u) annotation (Line(points={{-98,210},{-90,210},{-90,48},
           {-54,48}}, color={0,0,127}));
-  connect(senMasFloCHW.port_b, senTCHWSup.port_a) annotation (Line(points={{120,
-          10},{122,10},{122,-46},{140,-46},{140,-40}}, color={0,127,255}));
-  connect(senMasFlo.port_b, expTanCHW.ports[2]) annotation (Line(points={{-210,
-          -40},{-88,-40},{-88,-15}}, color={0,127,255}));
+  connect(valByp.y, con.y) annotation (Line(points={{-30,-82},{-30,-176},{-50,
+          -176}}, color={0,0,127}));
   annotation (
     defaultComponentName="pla",
     Documentation(
@@ -406,4 +444,4 @@ First implementation.
           lineColor={238,46,47},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid)}));
-end ElectricChillerParallel;
+end ElectricChillerParallelTest;

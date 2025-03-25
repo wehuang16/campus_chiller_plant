@@ -1,18 +1,18 @@
 within campus_chiller_plant.Examples.BaseClasses;
-model chiller_tes_plant_controller
+model chiller_tes_plant_controller_old
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput chillerOn
     annotation (Placement(transformation(extent={{100,40},{140,80}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput tesMode
     annotation (Placement(transformation(extent={{100,-54},{140,-14}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tesValvePosition
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chillerPumpSpeed
     annotation (Placement(transformation(extent={{100,-2},{140,38}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput tesPumpSpeed
     annotation (Placement(transformation(extent={{100,-98},{140,-58}})));
   Buildings.Controls.OBC.CDL.Interfaces.IntegerInput systemCommand
     "1=baseline; 2=charge TES; 3=discharge TES"
     annotation (Placement(transformation(extent={{-140,34},{-100,74}})));
-  Modelica.Blocks.Tables.CombiTable1Ds systemModeFinal(table=[0,0,1,1,0.0; 1,1,
-        1,1,0.0; 2,1,0,1,0; 3,0,0.5,0.0,1; 4,1,0.5,1,0.0], extrapolation=
+  Modelica.Blocks.Tables.CombiTable1Ds systemModeFinal(table=[0,0,0.0,1,0.0; 1,
+        1,1,1,0.0; 2,1,1,1,0; 3,0,0.0,0.0,1; 4,1,1,1,0.0], extrapolation=
         Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
     annotation (Placement(transformation(extent={{12,-20},{32,0}})));
   Buildings.Controls.OBC.CDL.Conversions.IntegerToReal intToRea
@@ -45,7 +45,7 @@ equation
           -10},{38,60},{48,60}}, color={0,0,127}));
   connect(greThr.y, chillerOn)
     annotation (Line(points={{72,60},{120,60}}, color={255,0,255}));
-  connect(systemModeFinal.y[2],tesValvePosition)  annotation (Line(points={{33,
+  connect(systemModeFinal.y[2], chillerPumpSpeed) annotation (Line(points={{33,
           -10},{38,-10},{38,18},{120,18}}, color={0,0,127}));
   connect(systemModeFinal.y[3], greThr1.u) annotation (Line(points={{33,-10},{
           48,-10},{48,-32},{58,-32}}, color={0,0,127}));
@@ -73,4 +73,4 @@ equation
           {-2,-44},{-2,12},{120,12},{120,108}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
-end chiller_tes_plant_controller;
+end chiller_tes_plant_controller_old;

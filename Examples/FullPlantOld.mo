@@ -1,5 +1,5 @@
 within campus_chiller_plant.Examples;
-model FullPlant
+model FullPlantOld
 
             package MediumAir = Buildings.Media.Air;
   package MediumWater = Buildings.Media.Water;
@@ -49,8 +49,8 @@ parameter Integer numChi=2
   parameter Modelica.Units.SI.PressureDifference dpCooTowVal_nominal=6000
     "Nominal pressure difference of the cooling tower valve";
   BaseClasses.TesPlant tesPlant(m_flow_nominal=mCHWSec_flow_nominal)
-    annotation (Placement(transformation(extent={{50,8},{88,52}})));
-  replaceable BaseClasses.ElectricChillerParallelTest              pla(
+    annotation (Placement(transformation(extent={{36,-2},{78,-40}})));
+  replaceable BaseClasses.ElectricChillerParallelOld               pla(
     perChi=perChi,
     dTApp=dTApp,
     perCHWPum=perCHWPum,
@@ -104,11 +104,11 @@ parameter Integer numChi=2
     "Chilled water supply temperature setpoint"
     annotation (Placement(transformation(extent={{-164,-114},{-144,-94}})));
   Buildings.Fluid.MixingVolumes.MixingVolume vol(
+    nPorts=2,
     redeclare package Medium = MediumWater,
     m_flow_nominal=pla.numChi*mCHW_flow_nominal,
     V=20,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    nPorts=2)                                                  "Mixing volume"
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial) "Mixing volume"
     annotation (Placement(transformation(extent={{176,112},{196,132}})));
   Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow fixHeaFlo(T_ref=
         293.15)
@@ -118,13 +118,34 @@ parameter Integer numChi=2
     redeclare package Medium = MediumWater,
     m_flow_nominal=pla.numChi*mCHW_flow_nominal,
     dp_nominal(displayUnit="kPa") = 60000) "Flow resistance"
-    annotation (Placement(transformation(extent={{-46,76},{-66,96}})));
+    annotation (Placement(transformation(extent={{-34,-104},{-54,-84}})));
   Modelica.Blocks.Sources.Sine loaVar(
     amplitude=913865,
     f=1/126900,
     offset=913865,
     startTime(displayUnit="h") = 21600) "Variable demand load"
     annotation (Placement(transformation(extent={{-160,126},{-140,146}})));
+  Buildings.Applications.BaseClasses.Equipment.FlowMachine_y pumCHWSec(
+    redeclare final package Medium = MediumWater,
+    final per=fill(perCHWPum, numChi),
+    final m_flow_nominal=mCHWSec_flow_nominal,
+    final dpValve_nominal=dpCHWPumVal_nominal,
+    final num=numChi) "Chilled secondary loop water pumps"
+    annotation (Placement(transformation(extent={{-52,56},{-32,76}})));
+  Buildings.Fluid.FixedResistances.Junction jonConv(
+    redeclare final package Medium = MediumWater,
+    final m_flow_nominal={1,-1,1},
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
+        extent={{12,12},{-12,-12}},
+        rotation=0,
+        origin={64,-98})));
+  Buildings.Fluid.FixedResistances.Junction junDiv(
+    redeclare final package Medium = MediumWater,
+    final m_flow_nominal={1,-1,-1},
+    dp_nominal={0,0,0}) annotation (Placement(transformation(
+        extent={{-13,-13},{13,13}},
+        rotation=0,
+        origin={29,67})));
   BaseClasses.chiller_tes_plant_controller chiller_tes_plant_controller
     annotation (Placement(transformation(extent={{-2,150},{18,170}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable intTimTab(
@@ -132,27 +153,19 @@ parameter Integer numChi=2
     timeScale=3600,
     period=86400)
     annotation (Placement(transformation(extent={{-256,154},{-236,174}})));
+  Buildings.Controls.OBC.CDL.Routing.RealScalarReplicator reaScaRep(nout=numChi)
+    annotation (Placement(transformation(extent={{-74,76},{-54,96}})));
   Buildings.Controls.OBC.CDL.Reals.Hysteresis hys(uLow=273.15 + 20, uHigh=
         273.15 + 30)
     annotation (Placement(transformation(extent={{170,164},{190,184}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=vol.heatPort.T)
     annotation (Placement(transformation(extent={{112,150},{132,170}})));
-  Buildings.Fluid.Actuators.Valves.ThreeWayLinear val(
-    redeclare package Medium = MediumWater,
-    m_flow_nominal=mCHW_flow_nominal,
-    dpValve_nominal=1000)
-    annotation (Placement(transformation(extent={{98,-8},{72,-34}})));
-  Buildings.Fluid.Actuators.Valves.ThreeWayLinear val1(
-    redeclare package Medium = MediumWater,
-    m_flow_nominal=mCHW_flow_nominal,
-    dpValve_nominal=1000)
-    annotation (Placement(transformation(extent={{98,80},{74,104}})));
 equation
   connect(fixHeaFlo.port,vol.heatPort)
     annotation (Line(points={{-80,136},{170,136},{170,122},{176,122}},
                                                               color={191,0,0}));
-  connect(res.port_b,pla. port_aSerCoo) annotation (Line(points={{-66,86},{-74,
-          86},{-74,40},{-116,40},{-116,54.6667},{-110,54.6667}},
+  connect(res.port_b,pla. port_aSerCoo) annotation (Line(points={{-54,-94},{
+          -116,-94},{-116,54.6667},{-110,54.6667}},
                                                color={0,127,255}));
   connect(weaDat.weaBus,pla.weaBus)
     annotation (Line(points={{-140,96},{-100,96},{-100,66}},
@@ -163,6 +176,20 @@ equation
   connect(pla.TCHWSupSet,TCHWSupSet. y) annotation (Line(points={{-110.667,
           61.3333},{-134,61.3333},{-134,-104},{-143,-104}},
                                                color={0,0,127}));
+  connect(pla.port_bSerCoo, pumCHWSec.port_a) annotation (Line(points={{-90,
+          54.6667},{-62,54.6667},{-62,66},{-52,66}}, color={0,127,255}));
+  connect(junDiv.port_1, pumCHWSec.port_b)
+    annotation (Line(points={{16,67},{16,66},{-32,66}}, color={0,127,255}));
+  connect(junDiv.port_3, tesPlant.port_a) annotation (Line(points={{29,54},{29,
+          4},{84,4},{84,-5.37778},{78.8842,-5.37778}}, color={0,127,255}));
+  connect(junDiv.port_2, vol.ports[1]) annotation (Line(points={{42,67},{170,67},
+          {170,112},{185,112}}, color={0,127,255}));
+  connect(jonConv.port_1, vol.ports[2]) annotation (Line(points={{76,-98},{187,
+          -98},{187,112}}, color={0,127,255}));
+  connect(tesPlant.port_b, jonConv.port_3) annotation (Line(points={{78.6632,
+          -38.3111},{84,-38.3111},{84,-80},{64,-80},{64,-86}}, color={0,127,255}));
+  connect(jonConv.port_2, res.port_a) annotation (Line(points={{52,-98},{-28,
+          -98},{-28,-94},{-34,-94}}, color={0,127,255}));
   connect(intTimTab.y[1], chiller_tes_plant_controller.systemCommand)
     annotation (Line(points={{-234,164},{-14,164},{-14,165.4},{-4,165.4}},
         color={255,127,0}));
@@ -170,40 +197,28 @@ equation
         points={{20,166},{22,166},{22,112},{-112,112},{-112,63.3333},{-110.667,
           63.3333}}, color={255,0,255}));
   connect(chiller_tes_plant_controller.tesMode, tesPlant.chargeMode)
-    annotation (Line(points={{20,156.6},{26,156.6},{26,47.1111},{48,47.1111}},
-                      color={255,0,255}));
+    annotation (Line(points={{20,156.6},{26,156.6},{26,-35.7778},{33.7895,
+          -35.7778}}, color={255,0,255}));
   connect(chiller_tes_plant_controller.tesPumpSpeed, tesPlant.pump_speed)
-    annotation (Line(points={{20,152.2},{44,152.2},{44,27.0667},{48,27.0667}},
-                      color={0,0,127}));
+    annotation (Line(points={{20,152.2},{44,152.2},{44,-18.4667},{33.7895,
+          -18.4667}}, color={0,0,127}));
+  connect(reaScaRep.y, pumCHWSec.u) annotation (Line(points={{-52,86},{-44,86},
+          {-44,102},{-84,102},{-84,70},{-54,70}}, color={0,0,127}));
+  connect(chiller_tes_plant_controller.tesValvePosition, reaScaRep.u)
+    annotation (Line(points={{20,161.8},{32,161.8},{32,118},{-76,118},{-76,86}},
+        color={0,0,127}));
   connect(realExpression.y, hys.u) annotation (Line(points={{133,160},{160,160},
           {160,174},{168,174}}, color={0,0,127}));
   connect(hys.y, chiller_tes_plant_controller.loadRequest) annotation (Line(
         points={{192,174},{200,174},{200,144},{-12,144},{-12,160},{-4,160}},
         color={255,0,255}));
   connect(tesPlant.tesStatus, chiller_tes_plant_controller.tesStatus)
-    annotation (Line(points={{90,30.2444},{110,30.2444},{110,130},{-4,130},{-4,
-          153}},          color={255,0,255}));
-  connect(pla.port_bSerCoo, val.port_2) annotation (Line(points={{-90,54.6667},
-          {24,54.6667},{24,-21},{72,-21}}, color={0,127,255}));
-  connect(val.port_3, tesPlant.port_a) annotation (Line(points={{85,-8},{85,2},
-          {94,2},{94,11.9111},{88.8,11.9111}}, color={0,127,255}));
-  connect(val.port_1, vol.ports[1]) annotation (Line(points={{98,-21},{130,-21},
-          {130,-20},{185,-20},{185,112}}, color={0,127,255}));
-  connect(vol.ports[2], val1.port_1) annotation (Line(points={{187,112},{187,
-          110},{186,110},{186,92},{98,92}}, color={0,127,255}));
-  connect(tesPlant.port_b, val1.port_3) annotation (Line(points={{88.6,50.0444},
-          {94,50.0444},{94,74},{86,74},{86,80}}, color={0,127,255}));
-  connect(val1.port_2, res.port_a) annotation (Line(points={{74,92},{-40,92},{
-          -40,86},{-46,86}}, color={0,127,255}));
-  connect(chiller_tes_plant_controller.tesValvePosition, val1.y) annotation (
-      Line(points={{20,161.8},{34,161.8},{34,162},{86,162},{86,106.4}}, color={
-          0,0,127}));
-  connect(chiller_tes_plant_controller.tesValvePosition, val.y) annotation (
-      Line(points={{20,161.8},{40,161.8},{40,-36.6},{85,-36.6}}, color={0,0,127}));
+    annotation (Line(points={{80.2105,-21.2111},{110,-21.2111},{110,130},{-4,
+          130},{-4,153}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)),
     experiment(
       StopTime=172800,
       Interval=60,
       __Dymola_Algorithm="Dassl"));
-end FullPlant;
+end FullPlantOld;
