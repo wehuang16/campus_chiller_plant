@@ -1,6 +1,7 @@
 TesPlant
 ElectricChillerParallel
 ElectricChillerParallelTest
-ElectricChillerParallelOld
+ElectricChillerParallelOriginal
 chiller_tes_plant_controller
-chiller_tes_plant_controller_old
+chiller_tes_plant_controller_original
+TesStatusController

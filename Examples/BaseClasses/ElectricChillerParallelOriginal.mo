@@ -1,5 +1,5 @@
 within campus_chiller_plant.Examples.BaseClasses;
-model ElectricChillerParallelOld "District cooling plant model"
+model ElectricChillerParallelOriginal "District cooling plant model"
   extends Buildings.DHC.Plants.BaseClasses.PartialPlant(
     have_eleCoo=true,
     have_pum=true,
@@ -442,4 +442,4 @@ First implementation.
           lineColor={238,46,47},
           fillColor={255,255,255},
           fillPattern=FillPattern.Solid)}));
-end ElectricChillerParallelOld;
+end ElectricChillerParallelOriginal;

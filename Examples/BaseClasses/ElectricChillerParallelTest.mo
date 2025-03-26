@@ -261,6 +261,13 @@ model ElectricChillerParallelTest "District cooling plant model"
         origin={120,20})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant    con(k=0)
     annotation (Placement(transformation(extent={{-72,-186},{-52,-166}})));
+  Buildings.Controls.OBC.CDL.Logical.Switch logSwi[numChi]
+    annotation (Placement(transformation(extent={{-156,244},{-136,264}})));
+  Buildings.Controls.OBC.CDL.Routing.BooleanScalarReplicator booScaRep(nout=
+        numChi)
+    annotation (Placement(transformation(extent={{-286,258},{-266,278}})));
+  Buildings.Controls.OBC.CDL.Logical.Sources.Constant con1[numChi](k=false)
+    annotation (Placement(transformation(extent={{-234,230},{-214,250}})));
 protected
   final parameter Medium.ThermodynamicState sta_default=Medium.setState_pTX(
     T=Medium.T_default,
@@ -297,18 +304,9 @@ equation
       color={0,127,255}));
   connect(senTCHWRet.port_b,senMasFlo.port_a)
     annotation (Line(points={{-250,-40},{-230,-40}},color={0,127,255}));
-  connect(chiStaCon.y,mulChiSys.on)
-    annotation (Line(points={{-179.375,210},{-160,210},{-160,100},{80,100},{80,54},{62,54}},
-      color={255,0,255}));
-  connect(chiStaCon.y,chiOn.u)
-    annotation (Line(points={{-179.375,210},{-122,210}},
-      color={255,0,255}));
   connect(chiOn.y,pumCW.u)
     annotation (Line(points={{-98,210},{0,210},{0,174},{58,174}},
       color={0,0,127}));
-  connect(chiStaCon.y,cooTowWitByp.on)
-    annotation (Line(points={{-179.375,210},{-160,210},{-160,174},{-42,174}},
-      color={255,0,255}));
   connect(weaBus.TWetBul,cooTowWitByp.TWetBul)
     annotation (Line(points={{0.1,380.1},{0.1,380.1},{0.1,238},{-50,238},{-50,
           168},{-42,168}},
@@ -350,9 +348,6 @@ equation
   connect(senMasFlo.m_flow,chiStaCon.mFloChiWat)
     annotation (Line(points={{-220,-29},{-220,205.25},{-201.25,205.25}},
       color={0,0,127}));
-  connect(chiStaCon.y,chiBypCon.chiOn)
-    annotation (Line(points={{-179.375,210},{-160,210},{-160,-145},{-122,-145}},
-      color={255,0,255}));
   connect(senMasFlo.port_b, joiCHWRet.port_3)
     annotation (Line(points={{-210,-40},{-90,-40}}, color={0,127,255}));
   connect(valByp.port_b, joiCHWRet.port_1)
@@ -373,6 +368,23 @@ equation
           {-54,48}}, color={0,0,127}));
   connect(valByp.y, con.y) annotation (Line(points={{-30,-82},{-30,-176},{-50,
           -176}}, color={0,0,127}));
+  connect(chiStaCon.y, logSwi.u1) annotation (Line(points={{-179.375,210},{
+          -179.375,262},{-158,262}}, color={255,0,255}));
+  connect(on, booScaRep.u) annotation (Line(points={{-400,220},{-300,220},{-300,
+          268},{-288,268}}, color={255,0,255}));
+  connect(booScaRep.y, logSwi.u2) annotation (Line(points={{-264,268},{-176,268},
+          {-176,254},{-158,254}}, color={255,0,255}));
+  connect(con1.y, logSwi.u3) annotation (Line(points={{-212,240},{-168,240},{
+          -168,246},{-158,246}}, color={255,0,255}));
+  connect(logSwi.y, chiOn.u) annotation (Line(points={{-134,254},{-124,254},{
+          -124,228},{-136,228},{-136,210},{-122,210}}, color={255,0,255}));
+  connect(logSwi.y, cooTowWitByp.on) annotation (Line(points={{-134,254},{-124,
+          254},{-124,228},{-136,228},{-136,212},{-132,212},{-132,208},{-128,208},
+          {-128,192},{-48,192},{-48,174},{-42,174}}, color={255,0,255}));
+  connect(logSwi.y, mulChiSys.on) annotation (Line(points={{-134,254},{-132,254},
+          {-132,138},{62,138},{62,54}}, color={255,0,255}));
+  connect(logSwi.y, chiBypCon.chiOn) annotation (Line(points={{-134,254},{-134,
+          -145},{-122,-145}}, color={255,0,255}));
   annotation (
     defaultComponentName="pla",
     Documentation(
