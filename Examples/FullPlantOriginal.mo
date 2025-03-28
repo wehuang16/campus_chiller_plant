@@ -225,8 +225,8 @@ equation
                                                   color={0,0,127}));
   connect(realExpression.y, hys.u) annotation (Line(points={{133,160},{160,160},
           {160,174},{168,174}}, color={0,0,127}));
-  connect(hys.y, chiller_tes_plant_controller_original.loadRequest) annotation
-    (Line(points={{192,174},{200,174},{200,144},{-12,144},{-12,160},{-4,160}},
+  connect(hys.y, chiller_tes_plant_controller_original.loadRequest) annotation (
+     Line(points={{192,174},{200,174},{200,144},{-12,144},{-12,160},{-4,160}},
         color={255,0,255}));
   connect(chiller_tes_plant_controller_original.chillerPumpSpeed, reaScaRep.u)
     annotation (Line(points={{20,161.8},{-76,161.8},{-76,86}}, color={0,0,127}));
