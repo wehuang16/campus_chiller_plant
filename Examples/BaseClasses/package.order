@@ -4,5 +4,7 @@ ElectricChillerParallelTest
 ElectricChillerParallelOriginal
 chiller_tes_plant_controller
 chiller_tes_plant_controller_original
+chiller_tes_plant_controller_D
 TesStatusController
 BuildingReturnCal
+ChillerStagingDataProcessing
