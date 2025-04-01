@@ -1,5 +1,5 @@
 within campus_chiller_plant.Examples;
-model FullPlant
+model FullPlantOld
 
             package MediumAir = Buildings.Media.Air;
   package MediumWater = Buildings.Media.Water;
@@ -206,4 +206,4 @@ equation
       StopTime=172800,
       Interval=60,
       __Dymola_Algorithm="Dassl"));
-end FullPlant;
+end FullPlantOld;
