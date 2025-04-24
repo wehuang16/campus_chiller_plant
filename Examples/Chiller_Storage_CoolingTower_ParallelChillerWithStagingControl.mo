@@ -1,5 +1,6 @@
 within campus_chiller_plant.Examples;
-model Chiller_Storage_CoolingTower "Put another chiller"
+model Chiller_Storage_CoolingTower_ParallelChillerWithStagingControl
+  "Put another chiller"
   package CondensorWater =  Buildings.Media.Water;
   package ChilledWater =  Buildings.Media.Water;
 
@@ -245,7 +246,7 @@ model Chiller_Storage_CoolingTower "Put another chiller"
   Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium
       = ChilledWater)
     annotation (Placement(transformation(extent={{118,-74},{138,-54}})));
-  BaseClasses.chiller_tes_plant_controller_D
+  BaseClasses.chiller_tes_plant_controller_Donghun
     chiller_tes_plant_controller_D
     annotation (Placement(transformation(extent={{170,184},{190,204}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable intTimTab(
@@ -496,8 +497,8 @@ equation
           -142,-26},{-122,-26}}, color={0,127,255}));
   connect(SP_mCWS.y, chillerStagingDataProcessing.setpoint) annotation (Line(
         points={{-126,-61},{-124,-62},{-155.4,-62}}, color={0,0,127}));
-  connect(chiStaCon.y, chillerStagingDataProcessing.stagingCommand) annotation
-    (Line(points={{-181.375,62},{-178,62},{-178,64},{-180,64},{-180,-62},{
+  connect(chiStaCon.y, chillerStagingDataProcessing.stagingCommand) annotation (
+     Line(points={{-181.375,62},{-178,62},{-178,64},{-180,64},{-180,-62},{
           -167.8,-62}}, color={255,0,255}));
   connect(chillerStagingDataProcessing.setpointOutput[1], pumCW1.m_flow_in)
     annotation (Line(points={{-161.7,-38},{-161.7,-28},{-148,-28},{-148,-32},{
@@ -590,4 +591,4 @@ Norminal Water Flows: 2gpm/ton for evap, 3 gpm /to for comp (~5oC DTW).")}),
       StopTime=172800,
       Interval=60,
       __Dymola_Algorithm="Dassl"));
-end Chiller_Storage_CoolingTower;
+end Chiller_Storage_CoolingTower_ParallelChillerWithStagingControl;

@@ -1,5 +1,5 @@
 within campus_chiller_plant.Examples.BaseClasses;
-model chiller_tes_plant_controller_D
+model chiller_tes_plant_controller_Donghun
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput chillerOn
     annotation (Placement(transformation(extent={{100,40},{140,80}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput tesMode
@@ -73,4 +73,4 @@ equation
           -36,-60},{-36,-50},{-28,-50}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)));
-end chiller_tes_plant_controller_D;
+end chiller_tes_plant_controller_Donghun;

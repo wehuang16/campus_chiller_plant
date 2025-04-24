@@ -1,5 +1,6 @@
 within campus_chiller_plant.Examples;
-model Chiller_Storage_CoolingTower1 "Put another chiller"
+model Chiller_Storage_CoolingTower_SeriesChillerWithControl
+  "Put another chiller"
   package CondensorWater =  Buildings.Media.Water;
   package ChilledWater =  Buildings.Media.Water;
 
@@ -263,7 +264,7 @@ model Chiller_Storage_CoolingTower1 "Put another chiller"
   Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium
       = ChilledWater)
     annotation (Placement(transformation(extent={{118,-74},{138,-54}})));
-  BaseClasses.chiller_tes_plant_controller_D
+  BaseClasses.chiller_tes_plant_controller_Donghun
     chiller_tes_plant_controller_D
     annotation (Placement(transformation(extent={{170,184},{190,204}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable intTimTab(
@@ -485,4 +486,4 @@ Norminal Water Flows: 2gpm/ton for evap, 3 gpm /to for comp (~5oC DTW).")}),
       StopTime=172800,
       Interval=60,
       __Dymola_Algorithm="Dassl"));
-end Chiller_Storage_CoolingTower1;
+end Chiller_Storage_CoolingTower_SeriesChillerWithControl;
