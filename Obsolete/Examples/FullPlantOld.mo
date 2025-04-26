@@ -1,4 +1,4 @@
-within campus_chiller_plant.Examples;
+within campus_chiller_plant.Obsolete.Examples;
 model FullPlantOld
 
             package MediumAir = Buildings.Media.Air;
@@ -48,9 +48,11 @@ parameter Integer numChi=2
     "Nominal pressure drop of chilled water pump valve";
   parameter Modelica.Units.SI.PressureDifference dpCooTowVal_nominal=6000
     "Nominal pressure difference of the cooling tower valve";
-  BaseClasses.TesPlant tesPlant(m_flow_nominal=mCHWSec_flow_nominal)
+  campus_chiller_plant.Examples.BaseClasses.TesPlant tesPlant(m_flow_nominal=
+        mCHWSec_flow_nominal)
     annotation (Placement(transformation(extent={{50,8},{88,52}})));
-  replaceable BaseClasses.ElectricChillerParallelTest              pla(
+  replaceable
+    campus_chiller_plant.Examples.BaseClasses.ElectricChillerParallelTest pla(
     perChi=perChi,
     dTApp=dTApp,
     perCHWPum=perCHWPum,
@@ -125,7 +127,7 @@ parameter Integer numChi=2
     offset=913865,
     startTime(displayUnit="h") = 21600) "Variable demand load"
     annotation (Placement(transformation(extent={{-160,126},{-140,146}})));
-  BaseClasses.chiller_tes_plant_controller chiller_tes_plant_controller
+  campus_chiller_plant.Examples.BaseClasses.chiller_tes_plant_controller chiller_tes_plant_controller
     annotation (Placement(transformation(extent={{-2,150},{18,170}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable intTimTab(
     table=[0,1; 8,2; 16,3; 21,1; 24,1],

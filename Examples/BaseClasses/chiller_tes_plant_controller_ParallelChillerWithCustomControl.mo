@@ -1,5 +1,8 @@
 within campus_chiller_plant.Examples.BaseClasses;
 model chiller_tes_plant_controller_ParallelChillerWithCustomControl
+  parameter Modelica.Units.SI.HeatFlowRate load_nominal=3000000
+    "Nominal cooling rate for the load";
+
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput chiller1On
     annotation (Placement(transformation(extent={{100,40},{140,80}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput secondaryPumpOn
@@ -42,8 +45,8 @@ model chiller_tes_plant_controller_ParallelChillerWithCustomControl
     annotation (Placement(transformation(extent={{100,-8},{140,32}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput bypassPumpOn
     annotation (Placement(transformation(extent={{100,-102},{140,-62}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealOutput pumpFlowToLoad "in kg/s"
-    annotation (Placement(transformation(
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput pumpFlowFraction annotation (
+     Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=270,
         origin={2,-120})));
@@ -57,6 +60,7 @@ model chiller_tes_plant_controller_ParallelChillerWithCustomControl
         rotation=0,
         origin={-118,-78})));
 equation
+  pumpFlowFraction=min(max(zoneThermalLoad/load_nominal,0.05),1);
   connect(equipmentControl.y[1], greThr.u) annotation (Line(points={{29,-10},{
           38,-10},{38,60},{48,60}}, color={0,0,127}));
   connect(equipmentControl.y[3],greThr2. u) annotation (Line(points={{29,-10},{
