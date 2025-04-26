@@ -1,5 +1,5 @@
 within campus_chiller_plant.Examples;
-model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl
+model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl1
   "Put another chiller"
   package CondensorWater =  Buildings.Media.Water;
   package ChilledWater =  Buildings.Media.Water;
@@ -275,10 +275,10 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl
   Modelica.Blocks.Sources.RealExpression realExpression(y=vol.heatPort.T)
     annotation (Placement(transformation(extent={{458,-68},{478,-48}})));
   Modelica.Blocks.Sources.Sine loaVar(
-    amplitude=1500000,
+    amplitude=500000,
     f=1/86400,
     phase=4.1887902047864,
-    offset=1500000,
+    offset=500000,
     startTime(displayUnit="h") = 0)     "Variable demand load"
     annotation (Placement(transformation(extent={{668,-100},{688,-80}})));
   Buildings.Fluid.Movers.FlowControlled_m_flow pumCW2(
@@ -649,4 +649,4 @@ Norminal Water Flows: 2gpm/ton for evap, 3 gpm /to for comp (~5oC DTW).")}),
       StopTime=345600,
       Interval=60,
       __Dymola_Algorithm="Dassl"));
-end Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl;
+end Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl1;
