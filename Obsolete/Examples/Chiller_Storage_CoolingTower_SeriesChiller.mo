@@ -159,8 +159,8 @@ model Chiller_Storage_CoolingTower_SeriesChiller "Put another chiller"
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={30,-104})));
-  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium
-      = ChilledWater)
+  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium =
+        ChilledWater)
     annotation (Placement(transformation(extent={{130,20},{150,40}})));
   Buildings.Fluid.Sensors.Temperature Sensor_TCHWS(redeclare package Medium =
         ChilledWater)
@@ -276,11 +276,11 @@ model Chiller_Storage_CoolingTower_SeriesChiller "Put another chiller"
     T_start=278.15,
     tau=600)
     annotation (Placement(transformation(extent={{132,-52},{158,-26}})));
-  Buildings.Fluid.Sensors.Temperature Sensor_Ttankin(redeclare package Medium
-      = ChilledWater)
+  Buildings.Fluid.Sensors.Temperature Sensor_Ttankin(redeclare package Medium =
+        ChilledWater)
     annotation (Placement(transformation(extent={{148,-16},{168,4}})));
-  Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium
-      = ChilledWater)
+  Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium =
+        ChilledWater)
     annotation (Placement(transformation(extent={{118,-74},{138,-54}})));
 equation
   connect(ChillerON.y, greaterThreshold.u)

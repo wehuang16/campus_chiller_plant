@@ -1,4 +1,4 @@
-within campus_chiller_plant.Examples;
+within campus_chiller_plant.Obsolete.Examples;
 model Chiller_Storage_CoolingTower_ParallelChillerWithStagingControl
   "Put another chiller"
   package CondensorWater =  Buildings.Media.Water;
@@ -135,8 +135,8 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithStagingControl
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={196,-62})));
-  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium =
-        ChilledWater)
+  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium
+      = ChilledWater)
     annotation (Placement(transformation(extent={{130,20},{150,40}})));
   Buildings.Fluid.Sensors.Temperature Sensor_TCHWS(redeclare package Medium =
         ChilledWater)
@@ -240,13 +240,13 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithStagingControl
     nSeg=20,
     T_start=278.15)
     annotation (Placement(transformation(extent={{132,-52},{158,-26}})));
-  Buildings.Fluid.Sensors.Temperature Sensor_Ttankin(redeclare package Medium =
-        ChilledWater)
+  Buildings.Fluid.Sensors.Temperature Sensor_Ttankin(redeclare package Medium
+      = ChilledWater)
     annotation (Placement(transformation(extent={{222,-24},{242,-4}})));
-  Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium =
-        ChilledWater)
+  Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium
+      = ChilledWater)
     annotation (Placement(transformation(extent={{118,-74},{138,-54}})));
-  BaseClasses.chiller_tes_plant_controller_Donghun
+  campus_chiller_plant.Examples.BaseClasses.chiller_tes_plant_controller_Donghun
     chiller_tes_plant_controller_D
     annotation (Placement(transformation(extent={{170,184},{190,204}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable intTimTab(
@@ -258,8 +258,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithStagingControl
     annotation (Placement(transformation(extent={{226,176},{246,196}})));
   Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temperatureSensorBottom
     annotation (Placement(transformation(extent={{226,140},{246,160}})));
-  BaseClasses.TesStatusController
-                      tesStatusController
+  campus_chiller_plant.Examples.BaseClasses.TesStatusController tesStatusController
     annotation (Placement(transformation(extent={{358,148},{378,168}})));
   Buildings.Controls.OBC.CDL.Reals.Hysteresis largeLoadProtection(uLow=273.15
          + 23, uHigh=273.15 + 28)
@@ -331,7 +330,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithStagingControl
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-142,-2})));
-  BaseClasses.ChillerStagingDataProcessing chillerStagingDataProcessing
+  campus_chiller_plant.Examples.BaseClasses.ChillerStagingDataProcessing chillerStagingDataProcessing
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
@@ -353,7 +352,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithStagingControl
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={44,-72})));
-  BaseClasses.ChillerStagingDataProcessing chillerStagingDataProcessing1
+  campus_chiller_plant.Examples.BaseClasses.ChillerStagingDataProcessing chillerStagingDataProcessing1
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,

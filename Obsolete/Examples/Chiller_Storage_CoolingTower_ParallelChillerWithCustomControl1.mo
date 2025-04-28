@@ -1,4 +1,4 @@
-within campus_chiller_plant.Examples;
+within campus_chiller_plant.Obsolete.Examples;
 model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl1
   "Put another chiller"
   package CondensorWater =  Buildings.Media.Water;
@@ -227,7 +227,8 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl1
   Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium
       = ChilledWater)
     annotation (Placement(transformation(extent={{244,-48},{264,-28}})));
-  BaseClasses.chiller_tes_plant_controller_ParallelChillerWithCustomControl chiller_tes_plant_controller
+  campus_chiller_plant.Examples.BaseClasses.chiller_tes_plant_controller_ParallelChillerWithCustomControl
+    chiller_tes_plant_controller
     annotation (Placement(transformation(extent={{170,184},{190,204}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable intTimTab(
     table=[0,2; 6,1; 14,3; 22,2; 24,2],
@@ -238,8 +239,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl1
     annotation (Placement(transformation(extent={{226,176},{246,196}})));
   Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temperatureSensorBottom
     annotation (Placement(transformation(extent={{226,140},{246,160}})));
-  BaseClasses.TesStatusController
-                      tesStatusController
+  campus_chiller_plant.Examples.BaseClasses.TesStatusController tesStatusController
     annotation (Placement(transformation(extent={{358,148},{378,168}})));
   Buildings.Controls.OBC.CDL.Reals.Hysteresis largeLoadProtection(uLow=273.15
          + 23, uHigh=273.15 + 28)

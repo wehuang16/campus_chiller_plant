@@ -45,22 +45,11 @@ model chiller_tes_plant_controller_ParallelChillerWithCustomControl
     annotation (Placement(transformation(extent={{100,-8},{140,32}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput bypassPumpOn
     annotation (Placement(transformation(extent={{100,-102},{140,-62}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealOutput pumpFlowFraction annotation (
-     Placement(transformation(
-        extent={{-20,-20},{20,20}},
-        rotation=270,
-        origin={2,-120})));
   Buildings.Controls.OBC.CDL.Reals.GreaterThreshold greThr1(t=0.5)
     annotation (Placement(transformation(extent={{60,6},{80,26}})));
   Buildings.Controls.OBC.CDL.Reals.GreaterThreshold greThr3(t=0.5)
     annotation (Placement(transformation(extent={{60,-96},{80,-76}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput zoneThermalLoad "in Watt"
-    annotation (Placement(transformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-118,-78})));
 equation
-  pumpFlowFraction=min(max(zoneThermalLoad/load_nominal,0.05),1);
   connect(equipmentControl.y[1], greThr.u) annotation (Line(points={{29,-10},{
           38,-10},{38,60},{48,60}}, color={0,0,127}));
   connect(equipmentControl.y[3],greThr2. u) annotation (Line(points={{29,-10},{
