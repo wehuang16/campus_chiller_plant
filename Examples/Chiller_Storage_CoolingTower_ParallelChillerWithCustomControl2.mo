@@ -52,6 +52,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
         origin={22,-12})));
   Buildings.Fluid.Movers.FlowControlled_m_flow Pump_CHW_Primary1(
     redeclare package Medium = ChilledWater,
+    addPowerToMedium=false,
     m_flow_nominal=mEva_flow_nominal,
     tau=30,
     use_inputFilter=false,
@@ -80,6 +81,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
         origin={184,-22})));
   Buildings.Fluid.Movers.FlowControlled_m_flow Pump_CHW_Secondary(
     redeclare package Medium = ChilledWater,
+    addPowerToMedium=false,
     m_flow_nominal=mEva_flow_nominal,
     tau=30,
     use_inputFilter=false,
@@ -167,6 +169,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
         origin={-241,14})));
   Buildings.Fluid.Movers.FlowControlled_m_flow pumCW1(
     redeclare package Medium = CondensorWater,
+    addPowerToMedium=false,
     m_flow_nominal=mCon_flow_nominal,
     dp(start=dP0),
     use_inputFilter=false,
@@ -240,7 +243,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     annotation (Placement(transformation(extent={{226,140},{246,160}})));
   BaseClasses.TesStatusController
                       tesStatusController(tempDischargedBottom(displayUnit=
-          "degC") = 285.93, tempChargedTop(displayUnit="degC") = 278.43)
+          "degC") = 285.93, tempChargedTop(displayUnit="degC") = 279.65)
     annotation (Placement(transformation(extent={{358,148},{378,168}})));
   Buildings.Controls.OBC.CDL.Reals.Hysteresis hys(uLow=0.05, uHigh=0.1)
     annotation (Placement(transformation(extent={{442,116},{462,136}})));
@@ -274,9 +277,10 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     phase=4.1887902047864,
     offset=500000,
     startTime(displayUnit="h") = 0)     "Variable demand load"
-    annotation (Placement(transformation(extent={{668,-100},{688,-80}})));
+    annotation (Placement(transformation(extent={{644,-176},{664,-156}})));
   Buildings.Fluid.Movers.FlowControlled_m_flow pumCW2(
     redeclare package Medium = CondensorWater,
+    addPowerToMedium=false,
     m_flow_nominal=mCon_flow_nominal,
     dp(start=dP0),
     use_inputFilter=false,
@@ -308,6 +312,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
         origin={80,-104})));
   Buildings.Fluid.Movers.FlowControlled_m_flow Pump_CHW_Primary2(
     redeclare package Medium = ChilledWater,
+    addPowerToMedium=false,
     m_flow_nominal=mEva_flow_nominal,
     tau=30,
     use_inputFilter=false,
@@ -323,9 +328,6 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={24,78})));
-  Buildings.Fluid.Sensors.Temperature Sensor_TCHW_return(redeclare package
-      Medium = ChilledWater)
-    annotation (Placement(transformation(extent={{268,-108},{288,-88}})));
   Buildings.Fluid.Sensors.MassFlowRate Sensor_mCHi(redeclare package Medium =
         ChilledWater)                                                                     annotation (Placement(
         transformation(
@@ -334,6 +336,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
         origin={114,-118})));
   Buildings.Fluid.Movers.FlowControlled_m_flow Pump_CHW_Bypass(
     redeclare package Medium = ChilledWater,
+    addPowerToMedium=false,
     m_flow_nominal=mEva_flow_nominal,
     tau=30,
     use_inputFilter=false,
@@ -417,7 +420,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     annotation (Placement(transformation(extent={{506,164},{526,184}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con4(k=273.15 + 11.67)
     annotation (Placement(transformation(extent={{524,116},{544,136}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con5(k=0)
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con5(k=1)
     annotation (Placement(transformation(extent={{530,74},{550,94}})));
   Buildings.Controls.OBC.CDL.Reals.Multiply loaAct annotation (Placement(
         transformation(
@@ -427,13 +430,29 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
   Buildings.Controls.Continuous.LimPID conPID(
     controllerType=Modelica.Blocks.Types.SimpleController.PI,
     k=0.3,
-    Ti=300,
+    Ti=150,
     initType=Modelica.Blocks.Types.Init.InitialOutput,
     y_start=0.2,
     reverseActing=false)
     annotation (Placement(transformation(extent={{494,-18},{514,2}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con6(k=273.15 + 10.56)
     annotation (Placement(transformation(extent={{446,-12},{466,8}})));
+  Buildings.Fluid.Sensors.Temperature Sensor_TCHW_supply_1(redeclare package
+      Medium = ChilledWater)
+    annotation (Placement(transformation(extent={{104,10},{124,30}})));
+  Buildings.Fluid.Sensors.Temperature Sensor_TCHW_supply_2(redeclare package
+      Medium = ChilledWater)
+    annotation (Placement(transformation(extent={{48,32},{68,52}})));
+  Modelica.Blocks.Sources.CombiTimeTable dataChiller(
+    tableOnFile=true,
+    tableName="tab1",
+    fileName=ModelicaServices.ExternalReferences.loadResource(
+        "modelica://campus_chiller_plant/Resources/chiller_trend_updated.txt"),
+
+    columns=2:9,
+    smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments,
+    extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
+    annotation (Placement(transformation(extent={{664,-80},{684,-60}})));
 equation
   connect(Pump_CHW_Secondary.port_b, Sensor_msup.port_a)
     annotation (Line(points={{360,32},{360,30},{386,30}},
@@ -557,9 +576,6 @@ equation
           24,36},{-4,36},{-4,-2}}, color={0,127,255}));
   connect(junChwPumSup.port_2, Sensor_TCHW_primary_supply.port) annotation (
       Line(points={{34,78},{52,78},{52,76},{62,76},{62,98}}, color={0,127,255}));
-  connect(junSecRet.port_2, Sensor_TCHW_return.port) annotation (Line(points={{
-          328,-82},{328,-84},{296,-84},{296,-116},{278,-116},{278,-108}}, color
-        ={0,127,255}));
   connect(Sensor_mCHi.port_b, junChwPumRet.port_1) annotation (Line(points={{
           104,-118},{104,-116},{90,-116},{90,-104}}, color={0,127,255}));
   connect(junChwPumSup.port_2, junPriSup.port_1) annotation (Line(points={{34,
@@ -631,8 +647,6 @@ equation
           {558,140}}, color={0,0,127}));
   connect(con5.y, lin.f2)
     annotation (Line(points={{552,84},{558,84},{558,136}}, color={0,0,127}));
-  connect(loaVar.y, loaAct.u2)
-    annotation (Line(points={{689,-90},{689,-62},{748,-62}}, color={0,0,127}));
   connect(lin.y, loaAct.u1) annotation (Line(points={{582,144},{650,144},{650,
           136},{748,136},{748,-50}}, color={0,0,127}));
   connect(loaAct.y, fixHeaFlo.Q_flow) annotation (Line(points={{772,-56},{780,
@@ -655,6 +669,12 @@ equation
   connect(temperatureSensorBottom.port, tan.heaPorVol[14]) annotation (Line(
         points={{226,150},{230,150},{230,-62},{299,-62},{299,-34.7319}}, color=
           {191,0,0}));
+  connect(chi1.port_b2, Sensor_TCHW_supply_1.port) annotation (Line(points={{28,
+          -2},{28,0},{36,0},{36,-4},{114,-4},{114,10}}, color={0,127,255}));
+  connect(Sensor_TCHW_supply_2.port, chi2.port_b2) annotation (Line(points={{58,
+          32},{30,32},{30,28},{-4,28},{-4,-2}}, color={0,127,255}));
+  connect(dataChiller.y[6], loaAct.u2) annotation (Line(points={{685,-70},{685,
+          -72},{740,-72},{740,-62},{748,-62}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-400,
             -160},{380,120}}),
                          graphics={Text(
@@ -662,7 +682,8 @@ equation
           lineColor={28,108,200},
           fillColor={28,108,200},
           fillPattern=FillPattern.None,
-          textString="CHL")}),                                   Diagram(
+          textString="CHL"), Rectangle(extent={{-400,122},{380,-162}},
+            lineColor={0,0,0})}),                                Diagram(
         coordinateSystem(preserveAspectRatio=false, extent={{-400,-160},{380,
             120}}),
         graphics={Text(
@@ -673,7 +694,8 @@ equation
           textString="Norminal Cap: 1000 ton
 Norminal Water Flows: 2gpm/ton for evap, 3 gpm /to for comp (~5oC DTW).")}),
     experiment(
-      StopTime=345600,
+      StartTime=7171200,
+      StopTime=8985600,
       Interval=60,
       __Dymola_Algorithm="Dassl"));
 end Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2;

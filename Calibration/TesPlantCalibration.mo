@@ -38,7 +38,7 @@ model TesPlantCalibration
   Buildings.Fluid.Sensors.TemperatureTwoPort return_temperature_simulation(
       redeclare package Medium = ChilledWater, m_flow_nominal=mEva_flow_nominal)
     annotation (Placement(transformation(extent={{46,50},{16,82}})));
-  Modelica.Blocks.Sources.CombiTimeTable dataTest(
+  Modelica.Blocks.Sources.CombiTimeTable dataTes(
     tableOnFile=true,
     tableName="tab1",
     fileName=ModelicaServices.ExternalReferences.loadResource(
@@ -80,8 +80,8 @@ equation
         points={{-256,-6},{-162,-6},{-162,-22},{-152,-22}}, color={0,0,127}));
   connect(return_temperature_experimental.y, bouReturn.T_in) annotation (Line(
         points={{46,108},{114,108},{114,78},{96,78}}, color={0,0,127}));
-  connect(bouReturn.ports[1], return_temperature_simulation.port_a) annotation
-    (Line(points={{74,82},{50,82},{50,66},{46,66}}, color={0,127,255}));
+  connect(bouReturn.ports[1], return_temperature_simulation.port_a) annotation (
+     Line(points={{74,82},{50,82},{50,66},{46,66}}, color={0,127,255}));
   connect(return_temperature_simulation.port_b, tan.port_a)
     annotation (Line(points={{16,66},{-15,66},{-15,28}}, color={0,127,255}));
   connect(supply_temperature_simulation.port_a, tan.port_b) annotation (Line(
@@ -91,15 +91,15 @@ equation
     annotation (Line(points={{-10,-49},{-76,-49}}, color={0,127,255}));
   connect(mov.port_b, bouSupply.ports[1]) annotation (Line(points={{-108,-49},{
           -108,-50},{-124,-50},{-124,-26},{-130,-26}}, color={0,127,255}));
-  connect(dataTest.y[20], tes_flow.u) annotation (Line(points={{-315,80},{-290,
+  connect(dataTes.y[20], tes_flow.u) annotation (Line(points={{-315,80},{-290,
           80},{-290,30},{-164,30}}, color={0,0,127}));
   connect(tes_flow.y, mov.m_flow_in) annotation (Line(points={{-141,30},{-92,30},
           {-92,-23.8}}, color={0,0,127}));
-  connect(dataTest.y[18], return_temperature_experimental.u) annotation (Line(
+  connect(dataTes.y[18], return_temperature_experimental.u) annotation (Line(
         points={{-315,80},{10,80},{10,108},{22,108}}, color={0,0,127}));
-  connect(dataTest.y[19], supply_temperature_experimental.u) annotation (Line(
+  connect(dataTes.y[19], supply_temperature_experimental.u) annotation (Line(
         points={{-315,80},{-290,80},{-290,-6},{-280,-6}}, color={0,0,127}));
-  connect(dataTest.y[17], tank_average_temperature_experimental.u) annotation (
+  connect(dataTes.y[17], tank_average_temperature_experimental.u) annotation (
       Line(points={{-315,80},{-290,80},{-290,-82},{-212,-82}}, color={0,0,127}));
   connect(tan.heaPorVol, tempTan.port) annotation (Line(points={{-15,15},{-16,15},
           {-16,34},{32,34},{32,18},{38,18}}, color={191,0,0}));
