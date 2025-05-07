@@ -30,8 +30,8 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     COP_nominal=7,
     PLRMax=1,
     PLRMinUnl=0.4,
-    mEva_flow_nominal=100*0.9997,
-    mCon_flow_nominal=150*0.9997,
+    mEva_flow_nominal=65*0.9997,
+    mCon_flow_nominal=65*1.5*0.9997,
     TEvaLvg_nominal=278.43,
     capFunT={0.70790824,-0.002006568,-0.00259605,0.030058776,-0.0010564344,0.0020457036},
     EIRFunT={0.5605438,-0.01377927,6.57072e-005,0.013219362,0.000268596,-0.0005011308},
@@ -139,8 +139,8 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={384,-52})));
-  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium
-      = ChilledWater)
+  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium =
+        ChilledWater)
     annotation (Placement(transformation(extent={{220,32},{240,52}})));
   Buildings.Fluid.Sensors.Temperature Sensor_TCHWS(redeclare package Medium =
         ChilledWater)
@@ -224,11 +224,11 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     annotation (Placement(transformation(extent={{-13,-13},{13,13}},
         rotation=0,
         origin={299,-35})));
-  Buildings.Fluid.Sensors.Temperature Sensor_Ttankin(redeclare package Medium
-      = ChilledWater)
+  Buildings.Fluid.Sensors.Temperature Sensor_Ttankin(redeclare package Medium =
+        ChilledWater)
     annotation (Placement(transformation(extent={{410,-14},{430,6}})));
-  Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium
-      = ChilledWater)
+  Buildings.Fluid.Sensors.Temperature Sensor_Ttankout(redeclare package Medium =
+        ChilledWater)
     annotation (Placement(transformation(extent={{244,-48},{264,-28}})));
   BaseClasses.chiller_tes_plant_controller_ParallelChillerWithCustomControl chiller_tes_plant_controller
     annotation (Placement(transformation(extent={{170,184},{190,204}})));
@@ -366,8 +366,8 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     COP_nominal=7,
     PLRMax=1,
     PLRMinUnl=0.4,
-    mEva_flow_nominal=100*0.9997,
-    mCon_flow_nominal=150*0.9997,
+    mEva_flow_nominal=65*0.9997,
+    mCon_flow_nominal=65*1.5*0.9997,
     TEvaLvg_nominal=277.32,
     capFunT={0.70790824,-0.002006568,-0.00259605,0.030058776,-0.0010564344,0.0020457036},
     EIRFunT={0.5605438,-0.01377927,6.57072e-005,0.013219362,0.000268596,-0.0005011308},
@@ -376,7 +376,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     TEvaLvgMax=283.71) "Chiller performance data"
     annotation (Placement(transformation(extent={{400,68},{442,110}})));
 
-  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai2(k=18)
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai2(k=18*0.9997)
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
@@ -390,12 +390,12 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     annotation (Placement(transformation(extent={{228,-172},{248,-152}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con(k=0)
     annotation (Placement(transformation(extent={{194,-192},{214,-172}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea1(realTrue=0.5)
+  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea1(realTrue=1)
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={62,-38})));
-  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai4(k=mEva_flow_nominal)
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai4(k=50*0.9997)
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
@@ -448,11 +448,11 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
     tableName="tab1",
     fileName=ModelicaServices.ExternalReferences.loadResource(
         "modelica://campus_chiller_plant/Resources/chiller_trend_updated.txt"),
-
     columns=2:9,
     smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments,
     extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
     annotation (Placement(transformation(extent={{664,-80},{684,-60}})));
+
 equation
   connect(Pump_CHW_Secondary.port_b, Sensor_msup.port_a)
     annotation (Line(points={{360,32},{360,30},{386,30}},

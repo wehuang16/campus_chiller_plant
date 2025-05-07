@@ -4,7 +4,7 @@ model TesPlantCalibration
     package CondensorWater =  Buildings.Media.Water;
   package ChilledWater =  Buildings.Media.Water;
 
-    parameter Modelica.Units.SI.MassFlowRate mEva_flow_nominal=100*0.9997
+    parameter Modelica.Units.SI.MassFlowRate mEva_flow_nominal=65*0.9997
     "Nominal mass flow rate at evaporator";
   Buildings.Fluid.Storage.Stratified tan(
     redeclare package Medium = ChilledWater,
