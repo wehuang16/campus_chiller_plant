@@ -6,7 +6,8 @@ model TesPlantCalibration
 
     parameter Modelica.Units.SI.MassFlowRate mEva_flow_nominal=65*0.9997
     "Nominal mass flow rate at evaporator";
-  Buildings.Fluid.Storage.Stratified tan(
+  Buildings.Fluid.Storage.StratifiedEnhanced
+                                     tan(
     redeclare package Medium = ChilledWater,
     m_flow_nominal=mEva_flow_nominal,
     VTan=2650,

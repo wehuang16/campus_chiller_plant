@@ -23,8 +23,9 @@ model chiller_tes_plant_controller_ParallelChillerWithCustomControl
   Buildings.Controls.OBC.CDL.Interfaces.IntegerInput tesStatus
     "1=has capacity; 0=fully discharged"
     annotation (Placement(transformation(extent={{-142,-44},{-102,-4}})));
-  Modelica.Blocks.Tables.CombiTable2Ds systemModePre(table=[0,0,1; 1,0,1; 2,2,2;
-        3,0,3], extrapolation=Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
+  Modelica.Blocks.Tables.CombiTable2Ds systemModePre(table=[-999,0,1; 0,0,0; 1,
+        0,1; 2,2,2; 3,0,3],
+                extrapolation=Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
     "0=do nothing; 1=chiller serves load; 2=chiller charge tes; 3= tes serves load; 4=hybrid charge; 5=hybrid serves"
     annotation (Placement(transformation(extent={{-36,46},{-16,66}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanInput loadRequest

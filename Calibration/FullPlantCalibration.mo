@@ -16,7 +16,7 @@ model FullPlantCalibration
     tableOnFile=true,
     tableName="tab1",
     fileName=ModelicaServices.ExternalReferences.loadResource("modelica://campus_chiller_plant/Resources/chiller_trend_updated.txt"),
-    columns=2:9,
+    columns=2:10,
     smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments,
     extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
     annotation (Placement(transformation(extent={{14,-26},{34,-6}})));
@@ -41,6 +41,12 @@ model FullPlantCalibration
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={-14,-52})));
+  Buildings.Controls.OBC.UnitConversions.From_degC
+                            tank_average_temperature_experimental
+    annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={-52,-80})));
 equation
   connect(dataChiller.y[5], chiller_total_flow_experimental.u) annotation (Line(
         points={{35,-16},{62,-16},{62,22},{72,22}}, color={0,0,127}));
@@ -50,6 +56,9 @@ equation
         points={{35,-16},{56,-16},{56,-62},{66,-62}}, color={0,0,127}));
   connect(dataTes.y[20], tes_flow_experimental.u) annotation (Line(points={{-55,
           -18},{-36,-18},{-36,-52},{-26,-52}}, color={0,0,127}));
+  connect(dataTes.y[17], tank_average_temperature_experimental.u) annotation (
+      Line(points={{-55,-18},{-36,-18},{-36,-66},{-74,-66},{-74,-80},{-64,-80}},
+        color={0,0,127}));
   annotation (
     Icon(coordinateSystem(preserveAspectRatio=false)),
     Diagram(coordinateSystem(preserveAspectRatio=false)),
