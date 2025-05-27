@@ -16,7 +16,7 @@ model FullPlantCalibration
     tableOnFile=true,
     tableName="tab1",
     fileName=ModelicaServices.ExternalReferences.loadResource("modelica://campus_chiller_plant/Resources/chiller_trend_updated.txt"),
-    columns=2:10,
+    columns=2:11,
     smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments,
     extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
     annotation (Placement(transformation(extent={{14,-26},{34,-6}})));

@@ -71,11 +71,23 @@ model TesPlantCalibration
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={48,18})));
-  Modelica.Blocks.Math.Gain tank_average_temperature_simulation(k=1/16)
-    annotation (Placement(transformation(
+  Modelica.Blocks.Math.Gain gai6(k=1/16) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={166,14})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con7(k=2000)
+    annotation (Placement(transformation(extent={{-174,94},{-154,114}})));
+  Buildings.HeatTransfer.Sources.PrescribedHeatFlow heat_gain_top
+    annotation (Placement(transformation(extent={{-66,16},{-46,36}})));
+  Buildings.HeatTransfer.Sources.PrescribedHeatFlow heat_gain_all[16]
+    annotation (Placement(transformation(extent={{-60,-8},{-40,12}})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con8[16](k=2000)
+    annotation (Placement(transformation(extent={{-158,-110},{-138,-90}})));
+  Buildings.Controls.OBC.UnitConversions.To_degC tank_average_temperature_simulation
+    annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={224,-14})));
 equation
   connect(supply_temperature_experimental.y, bouSupply.T_in) annotation (Line(
         points={{-256,-6},{-162,-6},{-162,-22},{-152,-22}}, color={0,0,127}));
@@ -106,8 +118,19 @@ equation
           {-16,34},{32,34},{32,18},{38,18}}, color={191,0,0}));
   connect(tempTan.T, mulSum.u)
     annotation (Line(points={{59,18},{102,18}}, color={0,0,127}));
-  connect(mulSum.y, tank_average_temperature_simulation.u) annotation (Line(
-        points={{126,18},{144,18},{144,14},{154,14}}, color={0,0,127}));
+  connect(mulSum.y, gai6.u) annotation (Line(points={{126,18},{144,18},{144,14},
+          {154,14}}, color={0,0,127}));
+  connect(con7.y, heat_gain_top.Q_flow) annotation (Line(points={{-152,104},{
+          -144,104},{-144,58},{-66,58},{-66,26}}, color={0,0,127}));
+  connect(heat_gain_top.port, tan.heaPorVol[1]) annotation (Line(points={{-46,
+          26},{-46,24},{-6,24},{-6,60},{-70,60},{-70,-32},{-15,-32},{-15,
+          14.6344}}, color={191,0,0}));
+  connect(heat_gain_all.port, tan.heaPorVol) annotation (Line(points={{-40,2},{
+          -40,12},{-14,12},{-14,15},{-15,15}}, color={191,0,0}));
+  connect(con8.y, heat_gain_all.Q_flow) annotation (Line(points={{-136,-100},{
+          -66,-100},{-66,-6},{-68,-6},{-68,2},{-60,2}}, color={0,0,127}));
+  connect(gai6.y,tank_average_temperature_simulation. u) annotation (Line(
+        points={{177,14},{204,14},{204,-14},{212,-14}},       color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
         coordinateSystem(preserveAspectRatio=false)),
     experiment(

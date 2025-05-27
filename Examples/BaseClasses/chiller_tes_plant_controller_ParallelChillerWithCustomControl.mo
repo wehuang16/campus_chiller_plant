@@ -36,8 +36,8 @@ model chiller_tes_plant_controller_ParallelChillerWithCustomControl
   Buildings.Controls.OBC.CDL.Conversions.IntegerToReal intToRea1
     annotation (Placement(transformation(extent={{-78,-70},{-58,-50}})));
   Modelica.Blocks.Tables.CombiTable2Ds systemModeFinal(table=[0,-1,0,1; 0,0,0,0;
-        1,1,1,1; 2,2,2,0; 3,1,3,3],          extrapolation=Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
-    annotation (Placement(transformation(extent={{-26,-54},{-6,-34}})));
+        1,1,1,1; 2,2,2,2; 3,1,3,3],          extrapolation=Modelica.Blocks.Types.Extrapolation.NoExtrapolation)
+    annotation (Placement(transformation(extent={{-24,-54},{-4,-34}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput systemMode
     annotation (Placement(transformation(extent={{-20,-20},{20,20}},
         rotation=90,
@@ -65,16 +65,16 @@ equation
   connect(booToRea.y, systemModePre.u2)
     annotation (Line(points={{-58,8},{-38,8},{-38,50}}, color={0,0,127}));
   connect(systemModePre.y, systemModeFinal.u1) annotation (Line(points={{-15,56},
-          {-12,56},{-12,-30},{-28,-30},{-28,-38}}, color={0,0,127}));
-  connect(systemModeFinal.y, equipmentControl.u) annotation (Line(points={{-5,-44},
+          {-12,56},{-12,-30},{-26,-30},{-26,-38}}, color={0,0,127}));
+  connect(systemModeFinal.y, equipmentControl.u) annotation (Line(points={{-3,-44},
           {0,-44},{0,-10},{6,-10}},  color={0,0,127}));
-  connect(systemModeFinal.y, systemMode) annotation (Line(points={{-5,-44},{0,
+  connect(systemModeFinal.y, systemMode) annotation (Line(points={{-3,-44},{0,
           -44},{0,-10},{-2,-10},{-2,96},{0,96},{0,120}},
                                             color={0,0,127}));
   connect(tesStatus, intToRea1.u) annotation (Line(points={{-122,-24},{-90,-24},
           {-90,-60},{-80,-60}}, color={255,127,0}));
   connect(intToRea1.y, systemModeFinal.u2) annotation (Line(points={{-56,-60},{
-          -36,-60},{-36,-50},{-28,-50}}, color={0,0,127}));
+          -36,-60},{-36,-50},{-26,-50}}, color={0,0,127}));
   connect(greThr.y, chiller1On)
     annotation (Line(points={{72,60},{120,60}}, color={255,0,255}));
   connect(greThr2.y, secondaryPumpOn) annotation (Line(points={{76,-32},{96,-32},
