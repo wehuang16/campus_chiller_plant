@@ -1,6 +1,6 @@
 within campus_chiller_plant.Calibration;
 model FullPlantCalibration
-  Examples.Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2
+  Examples.Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl
     chiller_Storage_CoolingTower_ParallelChillerWithCustomControl2_1
     annotation (Placement(transformation(extent={{-36,36},{42,64}})));
   Modelica.Blocks.Sources.CombiTimeTable dataTes(
