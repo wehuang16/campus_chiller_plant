@@ -133,8 +133,8 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={384,-52})));
-  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium
-      = ChilledWater)
+  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium =
+        ChilledWater)
     annotation (Placement(transformation(extent={{220,32},{240,52}})));
   Buildings.Fluid.Sensors.Temperature Sensor_TCHWS(redeclare package Medium =
         ChilledWater)
@@ -527,14 +527,10 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl
         origin={410,-84})));
   Buildings.Controls.OBC.CDL.Conversions.RealToInteger reaToInt
     annotation (Placement(transformation(extent={{96,220},{116,240}})));
-  Buildings.HeatTransfer.Sources.PrescribedHeatFlow heat_gain_all[16]
-    annotation (Placement(transformation(extent={{256,-40},{276,-20}})));
   Buildings.HeatTransfer.Sources.PrescribedHeatFlow heat_gain_top
     annotation (Placement(transformation(extent={{264,-24},{284,-4}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con7(k=305.01)
     annotation (Placement(transformation(extent={{230,-24},{250,-4}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con8[16](k=0)
-    annotation (Placement(transformation(extent={{208,-104},{228,-84}})));
 equation
   connect(Pump_CHW_Secondary.port_b, Sensor_msup.port_a)
     annotation (Line(points={{360,32},{360,30},{386,30}},
@@ -771,16 +767,11 @@ equation
           201.8}}, color={255,127,0}));
   connect(dataChiller.y[10], reaToInt.u) annotation (Line(points={{685,-70},{
           848,-70},{848,308},{94,308},{94,230}}, color={0,0,127}));
-  connect(heat_gain_all.port, tan.heaPorVol) annotation (Line(points={{276,-30},
-          {276,-28},{284,-28},{284,-35},{299,-35}}, color={191,0,0}));
   connect(heat_gain_top.port, tan.heaPorVol[1]) annotation (Line(points={{284,-14},
           {284,-16},{292,-16},{292,20},{228,20},{228,-72},{299,-72},{299,
           -35.3656}}, color={191,0,0}));
   connect(con7.y, heat_gain_top.Q_flow)
     annotation (Line(points={{252,-14},{264,-14}}, color={0,0,127}));
-  connect(con8.y, heat_gain_all.Q_flow) annotation (Line(points={{230,-94},{240,
-          -94},{240,-76},{236,-76},{236,-56},{232,-56},{232,-30},{256,-30}},
-        color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-400,
             -160},{380,120}}),
                          graphics={Text(

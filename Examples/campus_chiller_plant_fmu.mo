@@ -1,6 +1,5 @@
 within campus_chiller_plant.Examples;
-model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl_fmu
-  "Put another chiller"
+model campus_chiller_plant_fmu "Put another chiller"
   package CondensorWater =  Buildings.Media.Water;
   package ChilledWater =  Buildings.Media.Water;
 
@@ -136,7 +135,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl_fmu
   Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium
       = ChilledWater)
     annotation (Placement(transformation(extent={{220,32},{240,52}})));
-  Buildings.Fluid.Sensors.Temperature Sensor_TCHWS(redeclare package Medium =
+  Buildings.Fluid.Sensors.Temperature Sensor_TCHWS2(redeclare package Medium =
         ChilledWater)
     annotation (Placement(transformation(extent={{200,34},{220,54}})));
   Buildings.Fluid.Chillers.ElectricEIR chi2(
@@ -221,11 +220,6 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl_fmu
         origin={299,-35})));
   BaseClasses.chiller_tes_plant_controller_ParallelChillerWithCustomControl chiller_tes_plant_controller
     annotation (Placement(transformation(extent={{170,184},{190,204}})));
-  Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable all_weekday_daily_schedule(
-    table=[0,2; 6,1; 14,3; 22,2; 24,2],
-    timeScale=3600,
-    period(displayUnit="s") = 86400)
-    annotation (Placement(transformation(extent={{34,182},{54,202}})));
   BaseClasses.TesStatusController
                       tesStatusController(tempDischargedBottom(displayUnit=
           "degC") = 285.93, tempChargedTop(displayUnit="degC") = 278.71)
@@ -256,13 +250,6 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl_fmu
     annotation (Placement(transformation(extent={{568,-28},{588,-8}})));
   Modelica.Blocks.Sources.RealExpression realExpression(y=vol.heatPort.T)
     annotation (Placement(transformation(extent={{458,-68},{478,-48}})));
-  Modelica.Blocks.Sources.Sine loaVar(
-    amplitude=500000,
-    f=1/86400,
-    phase=4.1887902047864,
-    offset=500000,
-    startTime(displayUnit="h") = 0)     "Variable demand load"
-    annotation (Placement(transformation(extent={{718,-140},{738,-120}})));
   Buildings.Fluid.Movers.FlowControlled_m_flow pumCW2(
     redeclare package Medium = CondensorWater,
     addPowerToMedium=false,
@@ -419,21 +406,7 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl_fmu
     annotation (Placement(transformation(extent={{494,-18},{514,2}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con6(k=273.15 + 10.56)
     annotation (Placement(transformation(extent={{446,-12},{464,6}})));
-  Modelica.Blocks.Sources.CombiTimeTable dataChiller(
-    tableOnFile=true,
-    tableName="tab1",
-    fileName=ModelicaServices.ExternalReferences.loadResource(
-        "modelica://campus_chiller_plant/Resources/chiller_trend_updated.txt"),
-    columns=2:11,
-    smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments,
-    extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
-    annotation (Placement(transformation(extent={{664,-80},{684,-60}})));
 
-  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter OAT(k=1) annotation (
-      Placement(transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=180,
-        origin={670,180})));
   Buildings.Controls.OBC.CDL.Reals.Hysteresis OAT_lockout(uLow=19.95, uHigh=20)
     annotation (Placement(transformation(extent={{620,214},{640,234}})));
   Buildings.Controls.OBC.CDL.Logical.And and2
@@ -449,40 +422,11 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl_fmu
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={564,-188})));
-  Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable weekly_schedule(
-    table=[0,2; 5.75,0; 6,1; 13.75,0; 14,3; 21.5,0; 21.75,2; 24,2; 29.75,0; 30,
-        1; 37.75,0; 38,3; 45.5,0; 45.75,2; 48,2; 53.75,0; 54,1; 61.75,0; 62,3;
-        69.5,0; 69.75,2; 72,2; 78.5,0; 78.8333,1; 89.5,0; 96,2; 109.8333,0; 116,
-        2; 120,2; 124,0; 124.25,1; 133.75,0; 134,3; 141.5,0; 141.75,2; 144,2;
-        149.75,0; 150,1; 157.75,0; 158,3; 165.5,0; 165.75,2; 168,2],
-    timeScale=3600,
-    period=86400*7)
-    annotation (Placement(transformation(extent={{108,174},{128,194}})));
   Buildings.Controls.OBC.UnitConversions.To_degC tank_average_temperature_simulation
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={608,-182})));
-  Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable custom_schedule(
-    table=[0,2; 1992,2; 1998,1; 2006,3; 2013.8333,0; 2014.1667,2; 2016,2; 2022,
-        1; 2030,3; 2037.8333,0; 2038.1667,2; 2040,2; 2046,1; 2050.6667,3;
-        2061.8333,0; 2062.1667,2; 2064,2; 2070,1; 2078,3; 2085.8333,0;
-        2086.1667,2; 2088,2; 2094,1; 2102,3; 2109.8333,0; 2110.1667,0; 2112,0;
-        2118,1; 2126,3; 2133.8333,0; 2134.1667,0; 2136,0; 2142,1; 2145.75,3;
-        2157.8333,0; 2158.1667,2; 2160,2; 2166,1; 2174,3; 2181.8333,0;
-        2182.1667,2; 2184,2; 2190,1; 2198,3; 2205.8333,0; 2206.1667,2; 2208,2;
-        2214,1; 2222,3; 2229.8333,0; 2230.1667,2; 2232,2; 2238,1; 2246,3;
-        2253.8333,0; 2254.1667,2; 2256,2; 2262,1; 2270,3; 2277.8333,0;
-        2278.1667,2; 2280,2; 2286,1; 2294,3; 2301.8333,0; 2302.1667,2; 2304,2;
-        2310,1; 2318,3; 2325.8333,0; 2326.1667,2; 2328,2; 2334,1; 2342,3;
-        2349.8333,0; 2350.1667,2; 2352,2; 2358,1; 2366,3; 2373.8333,0;
-        2374.1667,2; 2376,2; 2382,1; 2390,3; 2397.8333,0; 2398.1667,2; 2400,2;
-        2406,1; 2414,3; 2421.8333,0; 2422.1667,2; 2424,2; 2430,1; 2438,3;
-        2445.8333,0; 2446.1667,2; 2448,2; 2454,1; 2462,3; 2469.8333,0;
-        2470.1667,2; 2472,2; 2478,1; 2486,3; 2493.8333,0; 2494.1667,2; 2496,2],
-    timeScale=3600,
-    period(displayUnit="d") = 31536000)
-    annotation (Placement(transformation(extent={{74,150},{94,170}})));
 
   Buildings.Fluid.Sensors.TemperatureTwoPort Sensor_TCHW_supply_1(redeclare
       package Medium = ChilledWater, m_flow_nominal=mEva_flow_nominal,
@@ -525,16 +469,24 @@ model Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl_fmu
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={410,-84})));
-  Buildings.Controls.OBC.CDL.Conversions.RealToInteger reaToInt
-    annotation (Placement(transformation(extent={{96,220},{116,240}})));
-  Buildings.HeatTransfer.Sources.PrescribedHeatFlow heat_gain_all[16]
-    annotation (Placement(transformation(extent={{256,-40},{276,-20}})));
   Buildings.HeatTransfer.Sources.PrescribedHeatFlow heat_gain_top
     annotation (Placement(transformation(extent={{264,-24},{284,-4}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con7(k=305.01)
     annotation (Placement(transformation(extent={{230,-24},{250,-4}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con8[16](k=0)
-    annotation (Placement(transformation(extent={{208,-104},{228,-84}})));
+  Buildings.Controls.OBC.CDL.Interfaces.IntegerInput systemCommand
+    annotation (Placement(transformation(extent={{-546,224},{-506,264}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput outdoor_air_temperature
+    annotation (Placement(transformation(extent={{-554,166},{-514,206}})));
+  Buildings.Controls.OBC.UnitConversions.To_degC to_degC
+    annotation (Placement(transformation(extent={{-392,186},{-372,206}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput building_cooling_load
+    annotation (Placement(transformation(extent={{-534,88},{-494,128}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort Sensor_TCHWS(redeclare package
+      Medium = ChilledWater, m_flow_nominal=mEva_flow_nominal) annotation (
+      Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=180,
+        origin={406,-26})));
 equation
   connect(Pump_CHW_Secondary.port_b, Sensor_msup.port_a)
     annotation (Line(points={{360,32},{360,30},{386,30}},
@@ -553,8 +505,8 @@ equation
   connect(junSecSup.port_2, Sensor_psub_Suction.port) annotation (Line(points={
           {188,28},{200,28},{200,32},{208,32},{208,28},{220,28},{220,24},{230,
           24},{230,32}}, color={0,127,255}));
-  connect(junSecSup.port_2, Sensor_TCHWS.port) annotation (Line(points={{188,28},
-          {200,28},{200,34},{210,34}}, color={0,127,255}));
+  connect(junSecSup.port_2, Sensor_TCHWS2.port) annotation (Line(points={{188,
+          28},{200,28},{200,34},{210,34}}, color={0,127,255}));
   connect(SP_TCHe[2].y, chi2.TSet)
     annotation (Line(points={{-65,62},{-7,62},{-7,0}}, color={0,0,127}));
   connect(SP_TCHe[1].y, chi1.TSet)
@@ -704,12 +656,6 @@ equation
           -138},{178,-138}}, color={0,0,127}));
   connect(conPID.y, swi.u1) annotation (Line(points={{515,-8},{542,-8},{542,
           -132},{226,-132},{226,-154}}, color={0,0,127}));
-  connect(dataChiller.y[6], loaAct.u2) annotation (Line(points={{685,-70},{685,
-          -72},{740,-72},{740,-62},{748,-62}}, color={0,0,127}));
-  connect(dataChiller.y[9], OAT.u)
-    annotation (Line(points={{685,-70},{685,180},{682,180}}, color={0,0,127}));
-  connect(OAT_lockout.u, OAT.y) annotation (Line(points={{618,224},{604,224},{
-          604,202},{658,202},{658,180}}, color={0,0,127}));
   connect(OAT_lockout.y, and2.u1) annotation (Line(points={{642,224},{658,224},
           {658,234},{668,234},{668,324},{442,324},{442,280}}, color={255,0,255}));
   connect(hys.y, and2.u2) annotation (Line(points={{464,126},{472,126},{472,264},
@@ -763,24 +709,23 @@ equation
     annotation (Line(points={{340,-16},{340,-8},{328,-8}}, color={0,127,255}));
   connect(Sensor_Ttankin.port_a, tan.port_a)
     annotation (Line(points={{308,-8},{299,-8},{299,-22}}, color={0,127,255}));
-  connect(and2.u2, chiller_tes_plant_controller.loadRequest) annotation (Line(
-        points={{442,272},{324,272},{324,274},{168,274},{168,197.8}}, color={
-          255,0,255}));
-  connect(reaToInt.y, chiller_tes_plant_controller.systemCommand) annotation (
-      Line(points={{118,230},{132,230},{132,204},{160,204},{160,201.8},{168,
-          201.8}}, color={255,127,0}));
-  connect(dataChiller.y[10], reaToInt.u) annotation (Line(points={{685,-70},{
-          848,-70},{848,308},{94,308},{94,230}}, color={0,0,127}));
-  connect(heat_gain_all.port, tan.heaPorVol) annotation (Line(points={{276,-30},
-          {276,-28},{284,-28},{284,-35},{299,-35}}, color={191,0,0}));
   connect(heat_gain_top.port, tan.heaPorVol[1]) annotation (Line(points={{284,-14},
           {284,-16},{292,-16},{292,20},{228,20},{228,-72},{299,-72},{299,
           -35.3656}}, color={191,0,0}));
   connect(con7.y, heat_gain_top.Q_flow)
     annotation (Line(points={{252,-14},{264,-14}}, color={0,0,127}));
-  connect(con8.y, heat_gain_all.Q_flow) annotation (Line(points={{230,-94},{240,
-          -94},{240,-76},{236,-76},{236,-56},{232,-56},{232,-30},{256,-30}},
-        color={0,0,127}));
+  connect(and2.y, chiller_tes_plant_controller.loadRequest) annotation (Line(
+        points={{466,280},{490,280},{490,232},{160,232},{160,197.8},{168,197.8}},
+        color={255,0,255}));
+  connect(outdoor_air_temperature, to_degC.u) annotation (Line(points={{-534,
+          186},{-404,186},{-404,196},{-394,196}}, color={0,0,127}));
+  connect(to_degC.y, OAT_lockout.u) annotation (Line(points={{-370,196},{618,
+          196},{618,224}}, color={0,0,127}));
+  connect(building_cooling_load, loaAct.u2) annotation (Line(points={{-514,108},
+          {734,108},{734,-62},{748,-62}}, color={0,0,127}));
+  connect(systemCommand, chiller_tes_plant_controller.systemCommand)
+    annotation (Line(points={{-526,244},{164,244},{164,201.8},{168,201.8}},
+        color={255,127,0}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-400,
             -160},{380,120}}),
                          graphics={Text(
@@ -797,4 +742,4 @@ equation
       StopTime=8985600,
       Interval=60,
       __Dymola_Algorithm="Dassl"));
-end Chiller_Storage_CoolingTower_ParallelChillerWithCustomControl_fmu;
+end campus_chiller_plant_fmu;
