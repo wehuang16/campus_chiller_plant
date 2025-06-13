@@ -132,12 +132,11 @@ model campus_chiller_plant_fmu "Put another chiller"
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={384,-52})));
-  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium
-      = ChilledWater)
-    annotation (Placement(transformation(extent={{220,32},{240,52}})));
-  Buildings.Fluid.Sensors.Temperature Sensor_TCHWS2(redeclare package Medium =
+  Buildings.Fluid.Sensors.Pressure Sensor_psub_Suction(redeclare package Medium =
         ChilledWater)
-    annotation (Placement(transformation(extent={{200,34},{220,54}})));
+    annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+        rotation=90,
+        origin={234,42})));
   Buildings.Fluid.Chillers.ElectricEIR chi2(
     redeclare package Medium1 = CondensorWater,
     redeclare package Medium2 = ChilledWater,
@@ -378,7 +377,7 @@ model campus_chiller_plant_fmu "Put another chiller"
         rotation=90,
         origin={-88,-68})));
   Buildings.Controls.OBC.CDL.Reals.Switch swi1
-    annotation (Placement(transformation(extent={{268,68},{288,88}})));
+    annotation (Placement(transformation(extent={{270,76},{290,96}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con1(k=0)
     annotation (Placement(transformation(extent={{252,36},{272,56}})));
   Buildings.Controls.OBC.CDL.Reals.Line lin
@@ -485,8 +484,10 @@ model campus_chiller_plant_fmu "Put another chiller"
       Medium = ChilledWater, m_flow_nominal=mEva_flow_nominal) annotation (
       Placement(transformation(
         extent={{-10,-10},{10,10}},
-        rotation=180,
-        origin={406,-26})));
+        rotation=0,
+        origin={232,70})));
+  BaseClasses.FmuPatch fmuPatch
+    annotation (Placement(transformation(extent={{-364,-164},{-344,-144}})));
 equation
   connect(Pump_CHW_Secondary.port_b, Sensor_msup.port_a)
     annotation (Line(points={{360,32},{360,30},{386,30}},
@@ -502,11 +503,6 @@ equation
   connect(res3.port_b, Sensor_pSdown.port)
     annotation (Line(points={{340,-36},{340,-52},{374,-52}},
                                                    color={0,127,255}));
-  connect(junSecSup.port_2, Sensor_psub_Suction.port) annotation (Line(points={
-          {188,28},{200,28},{200,32},{208,32},{208,28},{220,28},{220,24},{230,
-          24},{230,32}}, color={0,127,255}));
-  connect(junSecSup.port_2, Sensor_TCHWS2.port) annotation (Line(points={{188,
-          28},{200,28},{200,34},{210,34}}, color={0,127,255}));
   connect(SP_TCHe[2].y, chi2.TSet)
     annotation (Line(points={{-65,62},{-7,62},{-7,0}}, color={0,0,127}));
   connect(SP_TCHe[1].y, chi1.TSet)
@@ -531,8 +527,6 @@ equation
   connect(Sensor_TCWS.T, PID.u_s) annotation (Line(points={{-145,52},{-136,52},
           {-136,88},{-352,88},{-352,66},{-338,66}},
                                                   color={0,0,127}));
-  connect(Sensor_psub_Suction.port, Pump_CHW_Secondary.port_a) annotation (Line(
-        points={{230,32},{230,24},{328,24},{328,32},{340,32}}, color={0,127,255}));
   connect(tesStatusController.TesMode, chiller_tes_plant_controller.tesStatus)
     annotation (Line(points={{282,200},{288,200},{288,220},{156,220},{156,191.6},
           {167.8,191.6}}, color={255,127,0}));
@@ -622,10 +616,10 @@ equation
   connect(gai1.y, Pump_CHW_Secondary.m_flow_in)
     annotation (Line(points={{344,70},{350,70},{350,44}}, color={0,0,127}));
   connect(chiller_tes_plant_controller.secondaryPumpOn, swi1.u2) annotation (
-      Line(points={{192,191.2},{224,191.2},{224,188},{254,188},{254,78},{266,78}},
+      Line(points={{192,191.2},{224,191.2},{224,188},{254,188},{254,86},{268,86}},
         color={255,0,255}));
-  connect(con1.y, swi1.u3) annotation (Line(points={{274,46},{276,46},{276,56},{
-          266,56},{266,70}}, color={0,0,127}));
+  connect(con1.y, swi1.u3) annotation (Line(points={{274,46},{276,46},{276,56},
+          {268,56},{268,78}},color={0,0,127}));
   connect(realExpression.y, lin.u) annotation (Line(points={{479,-58},{484,-58},
           {484,146},{558,146},{558,144}}, color={0,0,127}));
   connect(con2.y, lin.x1) annotation (Line(points={{534,240},{548,240},{548,152},
@@ -648,10 +642,10 @@ equation
                               color={0,0,127}));
   connect(conPID.y, hys.u) annotation (Line(points={{515,-8},{515,92},{440,92},
           {440,126}}, color={0,0,127}));
-  connect(swi1.y, gai1.u) annotation (Line(points={{290,78},{308,78},{308,70},{
+  connect(swi1.y, gai1.u) annotation (Line(points={{292,86},{308,86},{308,70},{
           320,70}}, color={0,0,127}));
   connect(conPID.y, swi1.u1) annotation (Line(points={{515,-8},{528,-8},{528,
-          104},{264,104},{264,86},{266,86}}, color={0,0,127}));
+          104},{264,104},{264,94},{268,94}}, color={0,0,127}));
   connect(swi.y, gai.u) annotation (Line(points={{250,-162},{272,-162},{272,
           -138},{178,-138}}, color={0,0,127}));
   connect(conPID.y, swi.u1) annotation (Line(points={{515,-8},{542,-8},{542,
@@ -726,6 +720,12 @@ equation
   connect(systemCommand, chiller_tes_plant_controller.systemCommand)
     annotation (Line(points={{-526,244},{164,244},{164,201.8},{168,201.8}},
         color={255,127,0}));
+  connect(junSecSup.port_2, Sensor_TCHWS.port_a) annotation (Line(points={{188,
+          28},{216,28},{216,70},{222,70}}, color={0,127,255}));
+  connect(Sensor_TCHWS.port_b, Pump_CHW_Secondary.port_a)
+    annotation (Line(points={{242,70},{340,70},{340,32}}, color={0,127,255}));
+  connect(junSecSup.port_2, Sensor_psub_Suction.port)
+    annotation (Line(points={{188,28},{244,28},{244,42}}, color={0,127,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-400,
             -160},{380,120}}),
                          graphics={Text(

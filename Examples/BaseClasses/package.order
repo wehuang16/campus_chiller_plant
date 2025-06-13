@@ -9,3 +9,5 @@ chiller_tes_plant_controller_ParallelChillerWithCustomControl
 TesStatusController
 BuildingReturnCal
 ChillerStagingDataProcessing
+FmuPatch
+realSwitch
