@@ -1,6 +1,7 @@
 within campus_chiller_plant.Examples.Validation;
 model full_chiller_plant_fmu_validation
-  campus_chiller_plant_fmu chiller_plant_fmu
+  campus_chiller_plant_fmu_v2
+                           chiller_plant_fmu
     annotation (Placement(transformation(extent={{-14,8},{64,36}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Sin      sin(
     amplitude=2,
