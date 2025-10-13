@@ -134,8 +134,10 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
   Buildings.Fluid.HeatExchangers.CoolingTowers.YorkCalc cooTow(
     redeclare package Medium = CondensorWater,
     m_flow_nominal=mCon_flow_nominal,
-    PFan_nominal=6000,
+    fraPFan_nominal=700000/0.94,
+    PFan_nominal=700000,
     TAirInWB_nominal(displayUnit="degC") = 283.15,
+    fanRelPow(r_P={0,0.1,0.3,0.6,1}),
     TApp_nominal=6,
     dp_nominal=3*dP0,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyStateInitial)
@@ -157,7 +159,7 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
   Buildings.Fluid.Storage.ExpansionVessel expVesChi(redeclare package Medium =
         CondensorWater, V_start=1)
     annotation (Placement(transformation(extent={{-256,-105},{-236,-85}})));
-  Modelica.Blocks.Sources.Constant Twb(k=273.15 + 10) "chilled water flow rate"
+  Modelica.Blocks.Sources.Constant Twb(k=273.15 + 10)
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
@@ -167,21 +169,21 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
-        origin={-252,16})));
-  Buildings.Fluid.Sensors.Temperature Sensor_TCWS(redeclare package Medium =
-        CondensorWater)
-    annotation (Placement(transformation(extent={{-246,42},{-226,62}})));
-  Buildings.Fluid.Sensors.Temperature Sensor_TCWR(redeclare package Medium =
-        CondensorWater)
-    annotation (Placement(transformation(extent={{-292,-116},{-272,-96}})));
+        origin={-268,18})));
   Modelica.Blocks.Math.Gain gai3(k=mCon_flow_nominal) annotation (Placement(
         transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={-204,-72})));
-  Modelica.Blocks.Continuous.LimPID PID(yMax=1, yMin=0)
+  Buildings.Controls.Continuous.LimPID
+                                    conPID1(
+    k=0.3,
+    Ti=300,                             yMax=1, yMin=0,
+    initType=Modelica.Blocks.Types.Init.InitialOutput,
+    y_start=0,
+    reverseActing=false)
     annotation (Placement(transformation(extent={{-414,56},{-394,76}})));
-  Modelica.Blocks.Sources.Constant SP_TCWS(k=273.15 + 10)
+  Modelica.Blocks.Sources.Constant SP_TCWS(k=273.15 + 21.11)
                               annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
@@ -261,7 +263,7 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
     dp_nominal={0,0,0}) annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
-        origin={-216,16})));
+        origin={-208,36})));
   Buildings.Fluid.FixedResistances.Junction junChwPumRet(
     redeclare package Medium = ChilledWater,
     m_flow_nominal={1,-1,-1},
@@ -486,6 +488,140 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
         origin={312,90})));
   BaseClasses.FmuPatch fmuPatch
     annotation (Placement(transformation(extent={{-442,-164},{-422,-144}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort Sensor_TCWR(redeclare package
+      Medium = CondensorWater, m_flow_nominal=mCon_flow_nominal) annotation (
+      Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=180,
+        origin={-326,-128})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort Sensor_TCWS(redeclare package
+      Medium = CondensorWater, m_flow_nominal=mCon_flow_nominal) annotation (
+      Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={-248,56})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput building_cooling_load_actually_served
+    annotation (Placement(transformation(extent={{1040,42},{1080,82}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput chiller_1_OnOff
+    annotation (Placement(transformation(extent={{1046,-32},{1086,8}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chiller_1_supply_water_temperature
+    annotation (Placement(transformation(extent={{1054,-112},{1094,-72}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chiller_1_flow_rate
+    annotation (Placement(transformation(extent={{1046,-184},{1086,-144}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chiller_1_thermal_power
+    annotation (Placement(transformation(extent={{1056,-258},{1096,-218}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chiller_1_electrical_power
+    annotation (Placement(transformation(extent={{1056,-332},{1096,-292}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput chiller_2_OnOff
+    annotation (Placement(transformation(extent={{1314,-24},{1354,16}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chiller_2_supply_water_temperature
+    annotation (Placement(transformation(extent={{1326,-88},{1366,-48}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chiller_2_flow_rate
+    annotation (Placement(transformation(extent={{1334,-168},{1374,-128}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chiller_2_thermal_power
+    annotation (Placement(transformation(extent={{1344,-242},{1384,-202}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chiller_2_electrical_power
+    annotation (Placement(transformation(extent={{1344,-316},{1384,-276}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chillers_supply_water_temperature
+    annotation (Placement(transformation(extent={{1058,-398},{1098,-358}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput chillers_return_water_temperature
+    annotation (Placement(transformation(extent={{1056,-466},{1096,-426}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput bypass_flow_rate
+    annotation (Placement(transformation(extent={{1064,-512},{1104,-472}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_flow_rate
+    annotation (Placement(transformation(extent={{1068,-584},{1108,-544}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_supply_water_temperature
+    annotation (Placement(transformation(extent={{1058,-660},{1098,-620}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_return_water_temperature
+    annotation (Placement(transformation(extent={{1062,-724},{1102,-684}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_average_temperature
+    annotation (Placement(transformation(extent={{1360,-400},{1400,-360}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_top_temperature
+    annotation (Placement(transformation(extent={{1358,-456},{1398,-416}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_layer_3_temperature
+    annotation (Placement(transformation(extent={{1358,-528},{1398,-488}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_layer_14_temperature
+    annotation (Placement(transformation(extent={{1358,-644},{1398,-604}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_layer_9_temperature
+    annotation (Placement(transformation(extent={{1366,-598},{1406,-558}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput tank_bottom_temperature
+    annotation (Placement(transformation(extent={{1366,-678},{1406,-638}})));
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput building_cooling_load_request
+    annotation (Placement(transformation(extent={{1364,-758},{1404,-718}})));
+  Buildings.Controls.OBC.CDL.Interfaces.IntegerOutput tank_status
+    annotation (Placement(transformation(extent={{1368,-820},{1408,-780}})));
+  Modelica.Blocks.Sources.RealExpression realExpression1(y=Sensor_Ttankin.T)
+    annotation (Placement(transformation(extent={{944,-708},{964,-688}})));
+  Modelica.Blocks.Sources.RealExpression realExpression2(y=Sensor_Ttankout.T)
+    annotation (Placement(transformation(extent={{948,-650},{968,-630}})));
+  Modelica.Blocks.Sources.RealExpression realExpression3(y=tan.port_a.m_flow)
+    annotation (Placement(transformation(extent={{958,-586},{978,-566}})));
+  Modelica.Blocks.Sources.RealExpression realExpression4(y=Pump_CHW_Bypass.port_a.m_flow)
+    annotation (Placement(transformation(extent={{950,-518},{970,-498}})));
+  Modelica.Blocks.Sources.RealExpression realExpression5(y=
+        Sensor_TCHW_primary_return.T)
+    annotation (Placement(transformation(extent={{956,-464},{976,-444}})));
+  Modelica.Blocks.Sources.RealExpression realExpression6(y=
+        Sensor_TCHW_primary_supply.T)
+    annotation (Placement(transformation(extent={{956,-394},{976,-374}})));
+  Modelica.Blocks.Sources.RealExpression realExpression7(y=chi1.P)
+    annotation (Placement(transformation(extent={{960,-318},{980,-298}})));
+  Modelica.Blocks.Sources.RealExpression realExpression8(y=chi1.Q2_flow)
+    annotation (Placement(transformation(extent={{950,-254},{970,-234}})));
+  Modelica.Blocks.Sources.RealExpression realExpression9(y=chi1.port_a2.m_flow)
+    annotation (Placement(transformation(extent={{960,-168},{980,-148}})));
+  Modelica.Blocks.Sources.RealExpression realExpression11(y=
+        Sensor_TCHW_supply_1.T)
+    annotation (Placement(transformation(extent={{952,-116},{972,-96}})));
+  Modelica.Blocks.Sources.RealExpression realExpression12(y=loaAct.y)
+    annotation (Placement(transformation(extent={{972,42},{992,62}})));
+  Modelica.Blocks.Sources.RealExpression realExpression13(y=
+        Sensor_TCHW_supply_2.T)
+    annotation (Placement(transformation(extent={{1254,-86},{1274,-66}})));
+  Modelica.Blocks.Sources.RealExpression realExpression14(y=chi2.port_a2.m_flow)
+    annotation (Placement(transformation(extent={{1260,-142},{1280,-122}})));
+  Modelica.Blocks.Sources.RealExpression realExpression15(y=chi2.Q2_flow)
+    annotation (Placement(transformation(extent={{1262,-234},{1282,-214}})));
+  Modelica.Blocks.Sources.RealExpression realExpression16(y=chi2.P)
+    annotation (Placement(transformation(extent={{1260,-298},{1280,-278}})));
+  Modelica.Blocks.Sources.RealExpression realExpression17(y=
+        tank_average_temperature_simulation.y)
+    annotation (Placement(transformation(extent={{1266,-392},{1286,-372}})));
+  Modelica.Blocks.Sources.RealExpression realExpression18(y=tan.heaPorVol[1].T)
+    annotation (Placement(transformation(extent={{1264,-454},{1284,-434}})));
+  Modelica.Blocks.Sources.RealExpression realExpression19(y=tan.heaPorVol[3].T)
+    annotation (Placement(transformation(extent={{1266,-522},{1286,-502}})));
+  Modelica.Blocks.Sources.RealExpression realExpression20(y=tan.heaPorVol[9].T)
+    annotation (Placement(transformation(extent={{1272,-592},{1292,-572}})));
+  Modelica.Blocks.Sources.RealExpression realExpression21(y=tan.heaPorVol[14].T)
+    annotation (Placement(transformation(extent={{1268,-632},{1288,-612}})));
+  Modelica.Blocks.Sources.RealExpression realExpression22(y=tan.heaPorVol[16].T)
+    annotation (Placement(transformation(extent={{1276,-688},{1296,-668}})));
+  Modelica.Blocks.Sources.BooleanExpression booleanExpression(y=true)
+    annotation (Placement(transformation(extent={{978,-18},{998,2}})));
+  Modelica.Blocks.Sources.BooleanExpression booleanExpression1(y=true)
+    annotation (Placement(transformation(extent={{1254,-18},{1274,2}})));
+  Modelica.Blocks.Sources.BooleanExpression booleanExpression2(y=true)
+    annotation (Placement(transformation(extent={{1282,-750},{1302,-730}})));
+  Modelica.Blocks.Sources.IntegerExpression integerExpression(y=
+        chiller_tes_plant_controller.tesStatus)
+    annotation (Placement(transformation(extent={{1292,-814},{1312,-794}})));
+  Modelica.Blocks.Sources.RealExpression realExpression10(y=Sensor_TCWS.T)
+    annotation (Placement(transformation(extent={{1112,-862},{1132,-842}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput cooling_tower_supply_water_temperature
+    annotation (Placement(transformation(extent={{1230,-878},{1270,-838}})));
+  Modelica.Blocks.Sources.RealExpression realExpression23(y=Sensor_TCWR.T)
+    annotation (Placement(transformation(extent={{1118,-926},{1138,-906}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput cooling_tower_return_water_temperature
+    annotation (Placement(transformation(extent={{1236,-942},{1276,-902}})));
+  Modelica.Blocks.Sources.RealExpression realExpression24(y=cooTow.PFan)
+    annotation (Placement(transformation(extent={{1120,-1010},{1140,-990}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput cooling_tower_electrical_power
+    annotation (Placement(transformation(extent={{1238,-1026},{1278,-986}})));
+  Modelica.Blocks.Sources.RealExpression realExpression25(y=cooTow.Q_flow)
+    annotation (Placement(transformation(extent={{1128,-1076},{1148,-1056}})));
+  Buildings.Controls.OBC.CDL.Interfaces.RealOutput cooling_tower_thermal_power
+    annotation (Placement(transformation(extent={{1246,-1092},{1286,-1052}})));
 equation
   connect(Pump_CHW_Secondary.port_b, Sensor_msup.port_a)
     annotation (Line(points={{360,88},{424,88}}, color={0,127,255}));
@@ -506,22 +642,8 @@ equation
                                  color={0,127,255}));
   connect(Twb.y, cooTow.TAir)
     annotation (Line(points={{-413,26},{-353.8,26}}, color={0,0,127}));
-  connect(expVesChi.port_a, cooTow.port_a) annotation (Line(points={{-246,-105},
-          {-246,-128},{-366,-128},{-366,14},{-348,14}},             color={0,
-          127,255}));
-  connect(Sensor_mCW.port_b, Sensor_TCWS.port)
-    annotation (Line(points={{-242,16},{-236,16},{-236,42}},
-                                                 color={0,127,255}));
-  connect(expVesChi.port_a, Sensor_TCWR.port) annotation (Line(points={{-246,
-          -105},{-246,-128},{-282,-128},{-282,-116}},
-                                                    color={0,127,255}));
-  connect(PID.y, cooTow.y) annotation (Line(points={{-393,66},{-380,66},{-380,
+  connect(conPID1.y, cooTow.y) annotation (Line(points={{-393,66},{-380,66},{-380,
           38},{-353.8,38}}, color={0,0,127}));
-  connect(SP_TCWS.y, PID.u_m)
-    annotation (Line(points={{-453,46},{-404,46},{-404,54}}, color={0,0,127}));
-  connect(Sensor_TCWS.T, PID.u_s) annotation (Line(points={{-229,52},{-214,52},
-          {-214,88},{-430,88},{-430,66},{-416,66}},
-                                                  color={0,0,127}));
   connect(tesStatusController.TesMode, chiller_tes_plant_controller.tesStatus)
     annotation (Line(points={{282,200},{288,200},{288,220},{156,220},{156,191.6},
           {167.8,191.6}}, color={255,127,0}));
@@ -529,14 +651,12 @@ equation
     annotation (Line(points={{828,46},{836,46},{836,28},{620,28},{620,-24},{536,
           -24},{536,-32}},                                    color={191,0,0}));
   connect(cooTow.port_b, Sensor_mCW.port_a) annotation (Line(points={{-290,14},
-          {-290,16},{-262,16}}, color={0,127,255}));
-  connect(Sensor_mCW.port_b, junCwPumRet.port_1) annotation (Line(points={{-242,16},
-          {-226,16}},                       color={0,127,255}));
-  connect(junCwPumRet.port_2, pumCW1.port_a) annotation (Line(points={{-206,16},
-          {-192,16},{-192,44},{-170,44}},
+          {-288,18},{-278,18}}, color={0,127,255}));
+  connect(junCwPumRet.port_2, pumCW1.port_a) annotation (Line(points={{-198,36},
+          {-184,36},{-184,44},{-170,44}},
                                         color={0,127,255}));
-  connect(junCwPumRet.port_3, pumCW2.port_a) annotation (Line(points={{-216,6},
-          {-216,0},{-176,0},{-176,-6},{-166,-6}},
+  connect(junCwPumRet.port_3, pumCW2.port_a) annotation (Line(points={{-208,26},
+          {-208,12},{-176,12},{-176,-6},{-166,-6}},
                                   color={0,127,255}));
   connect(pumCW1.port_b, chi1.port_a1)
     annotation (Line(points={{-150,44},{-56,44},{-56,-2}},
@@ -732,6 +852,92 @@ equation
           -43.3333},{526,-43.3333}}, color={0,127,255}));
   connect(fixHeaFlo.Q_flow, loaAct.y) annotation (Line(points={{808,46},{808,
           -12},{886,-12},{886,-74}}, color={0,0,127}));
+  connect(Sensor_TCWR.port_b, cooTow.port_a) annotation (Line(points={{-336,
+          -128},{-366,-128},{-366,14},{-348,14}}, color={0,127,255}));
+  connect(Sensor_TCWR.port_a, expVesChi.port_a) annotation (Line(points={{-316,
+          -128},{-246,-128},{-246,-105}}, color={0,127,255}));
+  connect(Sensor_TCWS.port_a, Sensor_mCW.port_b) annotation (Line(points={{-258,
+          56},{-268,56},{-268,36},{-252,36},{-252,18},{-258,18}}, color={0,127,
+          255}));
+  connect(Sensor_TCWS.port_b, junCwPumRet.port_1) annotation (Line(points={{
+          -238,56},{-228,56},{-228,36},{-218,36}}, color={0,127,255}));
+  connect(SP_TCWS.y, conPID1.u_s) annotation (Line(points={{-453,46},{-428,46},
+          {-428,66},{-416,66}}, color={0,0,127}));
+  connect(conPID1.u_m, Sensor_TCWS.T) annotation (Line(points={{-404,54},{-404,
+          48},{-368,48},{-368,80},{-248,80},{-248,67}}, color={0,0,127}));
+  connect(realExpression12.y, building_cooling_load_actually_served)
+    annotation (Line(points={{993,52},{1024,52},{1024,62},{1060,62}}, color={0,
+          0,127}));
+  connect(booleanExpression.y, chiller_1_OnOff) annotation (Line(points={{999,
+          -8},{1000,-12},{1066,-12}}, color={255,0,255}));
+  connect(booleanExpression1.y, chiller_2_OnOff) annotation (Line(points={{1275,
+          -8},{1280,-4},{1334,-4}}, color={255,0,255}));
+  connect(realExpression11.y, chiller_1_supply_water_temperature) annotation (
+      Line(points={{973,-106},{1040,-106},{1040,-96},{1074,-96},{1074,-92}},
+        color={0,0,127}));
+  connect(realExpression9.y, chiller_1_flow_rate) annotation (Line(points={{981,
+          -158},{1032,-158},{1032,-168},{1066,-168},{1066,-164}}, color={0,0,
+          127}));
+  connect(realExpression8.y, chiller_1_thermal_power) annotation (Line(points={
+          {971,-244},{971,-248},{1040,-248},{1040,-238},{1076,-238}}, color={0,
+          0,127}));
+  connect(realExpression7.y, chiller_1_electrical_power) annotation (Line(
+        points={{981,-308},{981,-312},{1076,-312}}, color={0,0,127}));
+  connect(realExpression6.y, chillers_supply_water_temperature) annotation (
+      Line(points={{977,-384},{1040,-384},{1040,-378},{1078,-378}}, color={0,0,
+          127}));
+  connect(realExpression5.y, chillers_return_water_temperature) annotation (
+      Line(points={{977,-454},{1040,-454},{1040,-446},{1076,-446}}, color={0,0,
+          127}));
+  connect(realExpression4.y, bypass_flow_rate) annotation (Line(points={{971,
+          -508},{971,-512},{1040,-512},{1040,-492},{1084,-492}}, color={0,0,127}));
+  connect(realExpression3.y, tank_flow_rate) annotation (Line(points={{979,-576},
+          {1056,-576},{1056,-568},{1088,-568},{1088,-564}}, color={0,0,127}));
+  connect(realExpression2.y, tank_supply_water_temperature)
+    annotation (Line(points={{969,-640},{1078,-640}}, color={0,0,127}));
+  connect(realExpression1.y, tank_return_water_temperature) annotation (Line(
+        points={{965,-698},{1048,-698},{1048,-704},{1082,-704}}, color={0,0,127}));
+  connect(realExpression13.y, chiller_2_supply_water_temperature) annotation (
+      Line(points={{1275,-76},{1275,-80},{1312,-80},{1312,-68},{1346,-68}},
+        color={0,0,127}));
+  connect(realExpression14.y, chiller_2_flow_rate) annotation (Line(points={{
+          1281,-132},{1281,-136},{1312,-136},{1312,-148},{1354,-148}}, color={0,
+          0,127}));
+  connect(realExpression15.y, chiller_2_thermal_power) annotation (Line(points=
+          {{1283,-224},{1288,-222},{1364,-222}}, color={0,0,127}));
+  connect(realExpression16.y, chiller_2_electrical_power) annotation (Line(
+        points={{1281,-288},{1328,-288},{1328,-296},{1364,-296}}, color={0,0,
+          127}));
+  connect(realExpression17.y, tank_average_temperature) annotation (Line(points
+        ={{1287,-382},{1296,-380},{1380,-380}}, color={0,0,127}));
+  connect(realExpression18.y, tank_top_temperature) annotation (Line(points={{
+          1285,-444},{1285,-448},{1344,-448},{1344,-436},{1378,-436}}, color={0,
+          0,127}));
+  connect(realExpression19.y, tank_layer_3_temperature) annotation (Line(points
+        ={{1287,-512},{1296,-508},{1378,-508}}, color={0,0,127}));
+  connect(realExpression20.y, tank_layer_9_temperature) annotation (Line(points
+        ={{1293,-582},{1352,-582},{1352,-578},{1386,-578}}, color={0,0,127}));
+  connect(realExpression21.y, tank_layer_14_temperature) annotation (Line(
+        points={{1289,-622},{1296,-624},{1378,-624}}, color={0,0,127}));
+  connect(realExpression22.y, tank_bottom_temperature) annotation (Line(points=
+          {{1297,-678},{1352,-678},{1352,-658},{1386,-658}}, color={0,0,127}));
+  connect(booleanExpression2.y, building_cooling_load_request) annotation (Line(
+        points={{1303,-740},{1303,-744},{1352,-744},{1352,-738},{1384,-738}},
+        color={255,0,255}));
+  connect(integerExpression.y, tank_status) annotation (Line(points={{1313,-804},
+          {1342.5,-804},{1342.5,-800},{1388,-800}}, color={255,127,0}));
+  connect(realExpression10.y, cooling_tower_supply_water_temperature)
+    annotation (Line(points={{1133,-852},{1216,-852},{1216,-858},{1250,-858}},
+        color={0,0,127}));
+  connect(realExpression23.y, cooling_tower_return_water_temperature)
+    annotation (Line(points={{1139,-916},{1222,-916},{1222,-922},{1256,-922}},
+        color={0,0,127}));
+  connect(realExpression24.y, cooling_tower_electrical_power) annotation (Line(
+        points={{1141,-1000},{1224,-1000},{1224,-1006},{1258,-1006}}, color={0,
+          0,127}));
+  connect(realExpression25.y, cooling_tower_thermal_power) annotation (Line(
+        points={{1149,-1066},{1232,-1066},{1232,-1072},{1266,-1072}}, color={0,
+          0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-400,
             -160},{380,120}}),
                          graphics={Text(
