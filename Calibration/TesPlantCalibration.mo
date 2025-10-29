@@ -93,11 +93,11 @@ model TesPlantCalibration
     tableName="tab1",
     fileName=ModelicaServices.ExternalReferences.loadResource(
         "modelica://campus_chiller_plant/Resources/chiller_trend_updated.txt"),
-
     columns=2:11,
     smoothness=Modelica.Blocks.Types.Smoothness.ConstantSegments,
     extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
     annotation (Placement(transformation(extent={{114,-114},{134,-94}})));
+
 equation
   connect(supply_temperature_experimental.y, bouSupply.T_in) annotation (Line(
         points={{-256,-6},{-162,-6},{-162,-22},{-152,-22}}, color={0,0,127}));
