@@ -29,8 +29,8 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
     COP_nominal=7,
     PLRMax=1,
     PLRMinUnl=0.4,
-    mEva_flow_nominal=62.79*0.9997,
-    mCon_flow_nominal=62.79*1.5*0.9997,
+    mEva_flow_nominal=65*0.9997,
+    mCon_flow_nominal=65*1.5*0.9997,
     TEvaLvg_nominal=278.43,
     capFunT={0.70790824,-0.002006568,-0.00259605,0.030058776,-0.0010564344,0.0020457036},
     EIRFunT={0.5605438,-0.01377927,6.57072e-005,0.013219362,0.000268596,-0.0005011308},
@@ -218,11 +218,11 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={166,-164})));
-  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai1(k=mEva_flow_nominal)
+  Buildings.Controls.OBC.CDL.Reals.Multiply            mul
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
-        origin={430,170})));
+        origin={378,308})));
   Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow fixHeaFlo(T_ref=
         293.15)
     "Fixed heat flow rate"
@@ -327,8 +327,8 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
     COP_nominal=7,
     PLRMax=1,
     PLRMinUnl=0.4,
-    mEva_flow_nominal=62.79*0.9997,
-    mCon_flow_nominal=62.79*1.5*0.9997,
+    mEva_flow_nominal=65*0.9997,
+    mCon_flow_nominal=65*1.5*0.9997,
     TEvaLvg_nominal=277.32,
     capFunT={0.70790824,-0.002006568,-0.00259605,0.030058776,-0.0010564344,0.0020457036},
     EIRFunT={0.5605438,-0.01377927,6.57072e-005,0.013219362,0.000268596,-0.0005011308},
@@ -337,7 +337,7 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
     TEvaLvgMax=283.71) "Chiller performance data"
     annotation (Placement(transformation(extent={{-236,152},{-194,194}})));
 
-  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai2(k=25.08*0.9997)
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai2(k=10*0.9997)
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
@@ -356,7 +356,7 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
         extent={{-10,-10},{10,10}},
         rotation=90,
         origin={-58,-222})));
-  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai4(k=57.08*0.9997)
+  Buildings.Controls.OBC.CDL.Reals.MultiplyByParameter gai4(k=44*0.9997)
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=90,
@@ -622,6 +622,13 @@ model campus_chiller_plant_fmu_v2 "Put another chiller"
     annotation (Placement(transformation(extent={{1128,-1076},{1148,-1056}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput cooling_tower_thermal_power
     annotation (Placement(transformation(extent={{1246,-1092},{1286,-1052}})));
+  Buildings.Controls.OBC.CDL.Reals.Switch swi2
+    "when the chiller 1 serves load or when the tank serves load, gives different flow rates"
+    annotation (Placement(transformation(extent={{318,254},{338,274}})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con8(k=mEva_flow_nominal)
+    annotation (Placement(transformation(extent={{222,280},{242,300}})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con9(k=58*0.9997)
+    annotation (Placement(transformation(extent={{230,238},{250,258}})));
 equation
   connect(Pump_CHW_Secondary.port_b, Sensor_msup.port_a)
     annotation (Line(points={{360,88},{424,88}}, color={0,127,255}));
@@ -717,9 +724,9 @@ equation
   connect(pumCW2.m_flow_in, gai5.y) annotation (Line(points={{-156,-18},{-156,
           -48},{-146,-48},{-146,-57}},
                                  color={0,0,127}));
-  connect(gai1.y, Pump_CHW_Secondary.m_flow_in)
-    annotation (Line(points={{442,170},{448,170},{448,112},{350,112},{350,100}},
-                                                          color={0,0,127}));
+  connect(mul.y, Pump_CHW_Secondary.m_flow_in) annotation (Line(points={{390,
+          308},{480,308},{480,192},{416,192},{416,128},{350,128},{350,100}},
+        color={0,0,127}));
   connect(chiller_tes_plant_controller.secondaryPumpOn, swi1.u2) annotation (
       Line(points={{192,191.2},{252,191.2},{252,180},{276,180},{276,176},{332,
           176},{332,216},{410,216}},
@@ -745,9 +752,6 @@ equation
   connect(conPID.y, hys.u) annotation (Line(points={{773,10},{780,10},{780,68},
           {648,68},{648,126},{658,126}},
                       color={0,0,127}));
-  connect(swi1.y, gai1.u) annotation (Line(points={{434,216},{444,216},{444,188},
-          {412,188},{412,170},{418,170}},
-                    color={0,0,127}));
   connect(conPID.y, swi1.u1) annotation (Line(points={{773,10},{780,10},{780,68},
           {648,68},{648,136},{452,136},{452,200},{404,200},{404,224},{410,224}},
                                              color={0,0,127}));
@@ -938,6 +942,16 @@ equation
   connect(realExpression25.y, cooling_tower_thermal_power) annotation (Line(
         points={{1149,-1066},{1232,-1066},{1232,-1072},{1266,-1072}}, color={0,
           0,127}));
+  connect(swi1.y, mul.u1) annotation (Line(points={{434,216},{354,216},{354,314},
+          {366,314}}, color={0,0,127}));
+  connect(swi2.y, mul.u2) annotation (Line(points={{340,264},{344,264},{344,280},
+          {366,280},{366,302}}, color={0,0,127}));
+  connect(swi2.u2, chiller_tes_plant_controller.chiller1On) annotation (Line(
+        points={{316,264},{216,264},{216,200},{192,200}}, color={255,0,255}));
+  connect(con8.y, swi2.u1) annotation (Line(points={{244,290},{304,290},{304,
+          272},{316,272}}, color={0,0,127}));
+  connect(con9.y, swi2.u3)
+    annotation (Line(points={{252,248},{264,256},{316,256}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-400,
             -160},{380,120}}),
                          graphics={Text(
