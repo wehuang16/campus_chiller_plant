@@ -1,4 +1,4 @@
-within campus_chiller_plant.Examples.Validation;
+within campus_chiller_plant.Validation;
 model ElectricChillerParallel_validation
   "Example to test the chiller cooling plant"
   extends Modelica.Icons.Example;

@@ -1,4 +1,4 @@
-within campus_chiller_plant.Examples.Validation;
+within campus_chiller_plant.Validation;
 model full_chiller_plant_fmu_validation
   Plants.campus_chiller_plant chiller_plant_fmu
     annotation (Placement(transformation(extent={{-14,8},{64,36}})));

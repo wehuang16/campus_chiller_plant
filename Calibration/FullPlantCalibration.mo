@@ -1,7 +1,6 @@
 within campus_chiller_plant.Calibration;
 model FullPlantCalibration
-  Examples.campus_chiller_plant_fmu_v2
-    campus_chiller_plant_fmu_v2_1
+  Plants.campus_chiller_plant campus_chiller_plant_fmu_v2_1
     annotation (Placement(transformation(extent={{-36,36},{42,64}})));
   Modelica.Blocks.Sources.CombiTimeTable dataTes(
     tableOnFile=true,

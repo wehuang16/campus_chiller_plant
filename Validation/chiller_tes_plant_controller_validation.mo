@@ -1,4 +1,4 @@
-within campus_chiller_plant.Examples.Validation;
+within campus_chiller_plant.Validation;
 model chiller_tes_plant_controller_validation
   Plants.Subsequences.chiller_tes_plant_controller chiller_tes_plant_controller
     annotation (Placement(transformation(extent={{-12,4},{8,24}})));

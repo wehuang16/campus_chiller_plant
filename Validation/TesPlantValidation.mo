@@ -1,4 +1,4 @@
-within campus_chiller_plant.Examples.Validation;
+within campus_chiller_plant.Validation;
 model TesPlantValidation
 
             package MediumAir = Buildings.Media.Air;
