@@ -2,10 +2,7 @@ TesPlant
 ElectricChillerParallel
 ElectricChillerParallelTest
 ElectricChillerParallelOriginal
-chiller_tes_plant_controller
-chiller_tes_plant_controller_original
-chiller_tes_plant_controller_Donghun
-chiller_tes_plant_controller_ParallelChillerWithCustomControl
+plant_mode_controller
 TesStatusController
 BuildingReturnCal
 ChillerStagingDataProcessing
@@ -13,3 +10,5 @@ FmuPatch
 realSwitch
 cooling_load_ScaleDown_controller
 pump_flow_controller
+hx_water_pid_controller
+load_request_controller

@@ -21,7 +21,7 @@ model full_chiller_plant_fmu_validation
     period(displayUnit="s") = 86400)
     annotation (Placement(transformation(extent={{-60,44},{-40,64}})));
 equation
-  connect(sin.y, chiller_plant_fmu.outdoor_air_temperature) annotation (Line(
+  connect(sin.y,chiller_plant_fmu.outside_air_temperature)  annotation (Line(
         points={{-70,40},{-36,40},{-36,42.6},{-27.4,42.6}}, color={0,0,127}));
   connect(loaVar.y, chiller_plant_fmu.building_cooling_load) annotation (Line(
         points={{-69,-32},{-30,-32},{-30,26},{-25.4,26},{-25.4,34.8}}, color={0,

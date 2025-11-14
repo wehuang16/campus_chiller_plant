@@ -200,19 +200,16 @@ model campus_chiller_plant "Put another chiller"
     annotation (Placement(transformation(extent={{-13,-13},{13,13}},
         rotation=180,
         origin={263,-21})));
-  Subsequences.chiller_tes_plant_controller_ParallelChillerWithCustomControl
-    chiller_tes_plant_controller
-    annotation (Placement(transformation(extent={{170,184},{190,204}})));
+  Subsequences.plant_mode_controller chiller_tes_plant_controller
+    annotation (Placement(transformation(extent={{-354,260},{-334,280}})));
   Subsequences.TesStatusController tesStatusController(tempDischargedBottom(
         displayUnit="degC") = 285.93, tempChargedTop(displayUnit="degC") =
       278.71)
-    annotation (Placement(transformation(extent={{92,212},{112,232}})));
-  Buildings.Controls.OBC.CDL.Reals.Hysteresis hys(uLow=0.05, uHigh=0.1)
-    annotation (Placement(transformation(extent={{660,116},{680,136}})));
+    annotation (Placement(transformation(extent={{-404,258},{-384,278}})));
   Modelica.Thermal.HeatTransfer.Sources.PrescribedHeatFlow fixHeaFlo(T_ref=
         293.15)
     "Fixed heat flow rate"
-    annotation (Placement(transformation(extent={{584,40},{604,60}})));
+    annotation (Placement(transformation(extent={{484,-4},{504,16}})));
   Buildings.Fluid.MixingVolumes.MixingVolume vol(
     T_start=283.71,
     nPorts=3,
@@ -321,26 +318,9 @@ model campus_chiller_plant "Put another chiller"
     TEvaLvgMax=283.71) "Chiller performance data"
     annotation (Placement(transformation(extent={{-236,152},{-194,194}})));
 
-  Buildings.Controls.OBC.CDL.Reals.Multiply loaAct annotation (Placement(
-        transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=0,
-        origin={542,52})));
-  Buildings.Controls.Continuous.LimPID conPID(
-    controllerType=Modelica.Blocks.Types.SimpleController.PI,
-    k=0.3,
-    Ti=150,
-    initType=Modelica.Blocks.Types.Init.InitialOutput,
-    y_start=0.2,
-    reverseActing=false)
-    annotation (Placement(transformation(extent={{752,0},{772,20}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant con6(k=273.15 + 10.56)
-    annotation (Placement(transformation(extent={{704,-12},{722,6}})));
+    annotation (Placement(transformation(extent={{562,0},{580,18}})));
 
-  Buildings.Controls.OBC.CDL.Reals.Hysteresis OAT_lockout(uLow=19.95, uHigh=20)
-    annotation (Placement(transformation(extent={{634,160},{654,180}})));
-  Buildings.Controls.OBC.CDL.Logical.And and2
-    annotation (Placement(transformation(extent={{444,270},{464,290}})));
   Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor tempTan[16]
     " tank tempearture" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
@@ -415,10 +395,8 @@ model campus_chiller_plant "Put another chiller"
         origin={400,-368})));
   Buildings.Controls.OBC.CDL.Interfaces.IntegerInput systemCommand
     annotation (Placement(transformation(extent={{-546,224},{-506,264}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput outdoor_air_temperature
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput outside_air_temperature
     annotation (Placement(transformation(extent={{-554,166},{-514,206}})));
-  Buildings.Controls.OBC.UnitConversions.To_degC to_degC
-    annotation (Placement(transformation(extent={{-392,186},{-372,206}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealInput building_cooling_load
     annotation (Placement(transformation(extent={{-534,88},{-494,128}})));
   Buildings.Fluid.Sensors.TemperatureTwoPort Sensor_TCHWS(redeclare package
@@ -514,7 +492,7 @@ model campus_chiller_plant "Put another chiller"
   Modelica.Blocks.Sources.RealExpression realExpression11(y=
         Sensor_TCHW_supply_1.T)
     annotation (Placement(transformation(extent={{952,-116},{972,-96}})));
-  Modelica.Blocks.Sources.RealExpression realExpression12(y=loaAct.y)
+  Modelica.Blocks.Sources.RealExpression realExpression12(y=fixHeaFlo.Q_flow)
     annotation (Placement(transformation(extent={{972,42},{992,62}})));
   Modelica.Blocks.Sources.RealExpression realExpression13(y=
         Sensor_TCHW_supply_2.T)
@@ -565,9 +543,9 @@ model campus_chiller_plant "Put another chiller"
     annotation (Placement(transformation(extent={{1246,-1092},{1286,-1052}})));
   Subsequences.cooling_load_ScaleDown_controller
     cooling_load_ScaleDown_controller
-    annotation (Placement(transformation(extent={{648,-92},{668,-72}})));
+    annotation (Placement(transformation(extent={{446,-4},{466,16}})));
   Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temperatureSensor
-    annotation (Placement(transformation(extent={{572,-52},{592,-32}})));
+    annotation (Placement(transformation(extent={{578,-42},{598,-22}})));
   Subsequences.pump_flow_controller pump_flow_controller(
     mEva1_flow_nominal=per1.mEva_flow_nominal,
     mEva2_flow_nominal=per2.mEva_flow_nominal,
@@ -575,9 +553,11 @@ model campus_chiller_plant "Put another chiller"
     mCon2_flow_nominal=per2.mCon_flow_nominal,
     mBypass_flow_nominal=10*0.9997,
     mTankDischarge_flow_nominal=58*0.9997)
-    annotation (Placement(transformation(extent={{218,322},{238,342}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant con2(k=273.15 + 10.56)
-    annotation (Placement(transformation(extent={{22,392},{40,410}})));
+    annotation (Placement(transformation(extent={{-258,254},{-238,274}})));
+  Subsequences.hx_water_pid_controller hx_water_pid_controller
+    annotation (Placement(transformation(extent={{658,-38},{678,-18}})));
+  Subsequences.load_request_controller load_request_controller
+    annotation (Placement(transformation(extent={{716,-40},{736,-20}})));
 equation
   connect(Pump_CHW_Secondary.port_b, Sensor_msup.port_a)
     annotation (Line(points={{360,88},{424,88}}, color={0,127,255}));
@@ -601,11 +581,10 @@ equation
   connect(conPID1.y, cooTow.y) annotation (Line(points={{-393,66},{-380,66},{-380,
           38},{-353.8,38}}, color={0,0,127}));
   connect(tesStatusController.TesMode, chiller_tes_plant_controller.tesStatus)
-    annotation (Line(points={{114,222},{128,222},{128,191.6},{167.8,191.6}},
+    annotation (Line(points={{-382,268},{-382,267.6},{-356.2,267.6}},
                           color={255,127,0}));
   connect(fixHeaFlo.port,vol.heatPort)
-    annotation (Line(points={{604,50},{620,50},{620,-24},{536,-24},{536,-32}},
-                                                              color={191,0,0}));
+    annotation (Line(points={{504,6},{536,6},{536,-32}},      color={191,0,0}));
   connect(cooTow.port_b, Sensor_mCW.port_a) annotation (Line(points={{-290,14},
           {-288,18},{-278,18}}, color={0,127,255}));
   connect(junCwPumRet.port_2, pumCW1.port_a) annotation (Line(points={{-198,36},
@@ -639,16 +618,6 @@ equation
           {110,-44}},                             color={0,127,255}));
   connect(Pump_CHW_Bypass.port_b, junPriRet.port_3) annotation (Line(points={{110,-64},
           {110,-120}},                             color={0,127,255}));
-  connect(con6.y, conPID.u_s) annotation (Line(points={{723.8,-3},{740,-3},{740,
-          10},{750,10}},      color={0,0,127}));
-  connect(conPID.y, hys.u) annotation (Line(points={{773,10},{780,10},{780,68},
-          {648,68},{648,126},{658,126}},
-                      color={0,0,127}));
-  connect(OAT_lockout.y, and2.u1) annotation (Line(points={{656,170},{672,170},
-          {672,280},{496,280},{496,304},{424,304},{424,280},{442,280}},
-                                                              color={255,0,255}));
-  connect(hys.y, and2.u2) annotation (Line(points={{682,126},{682,264},{442,264},
-          {442,272}},           color={255,0,255}));
   connect(mulSum.y, gai6.u) annotation (Line(points={{424,-310},{456,-310}},
                              color={0,0,127}));
   connect(tempTan.T,mulSum. u)
@@ -657,11 +626,11 @@ equation
   connect(tan.heaPorVol,tempTan. port) annotation (Line(points={{263,-21},{328,
           -21},{328,-310},{348,-310}},       color={191,0,0}));
   connect(tempTan[3].T, tesStatusController.TesTopTemp) annotation (Line(points={{369,
-          -310},{384,-310},{384,152},{288,152},{288,168},{40,168},{40,225.8},{
-          89.8,225.8}},  color={0,0,127}));
+          -310},{384,-310},{384,424},{-432,424},{-432,271.8},{-406.2,271.8}},
+                         color={0,0,127}));
   connect(tempTan[14].T, tesStatusController.TesBottomTemp) annotation (Line(
-        points={{369,-310},{384,-310},{384,152},{288,152},{288,168},{40,168},{
-          40,215.8},{90,215.8}},                                          color
+        points={{369,-310},{384,-310},{384,424},{-424,424},{-424,261.8},{-406,
+          261.8}},                                                        color
         ={0,0,127}));
   connect(gai6.y, tank_average_temperature_simulation.u) annotation (Line(
         points={{479,-310},{508,-310}},                       color={0,0,127}));
@@ -694,20 +663,8 @@ equation
   connect(con7.y, heat_gain_top.Q_flow)
     annotation (Line(points={{388,-368},{368,-368}},
                                                    color={0,0,127}));
-  connect(and2.y, chiller_tes_plant_controller.loadRequest) annotation (Line(
-        points={{466,280},{490,280},{490,232},{160,232},{160,197.8},{168,197.8}},
-        color={255,0,255}));
-  connect(outdoor_air_temperature, to_degC.u) annotation (Line(points={{-534,
-          186},{-404,186},{-404,196},{-394,196}}, color={0,0,127}));
-  connect(to_degC.y, OAT_lockout.u) annotation (Line(points={{-370,196},{-352,
-          196},{-352,256},{608,256},{608,170},{632,170}},
-                           color={0,0,127}));
-  connect(building_cooling_load, loaAct.u2) annotation (Line(points={{-514,108},
-          {-514,112},{-152,112},{-152,184},{152,184},{152,160},{272,160},{272,
-          128},{288,128},{288,46},{530,46}},
-                                          color={0,0,127}));
   connect(systemCommand, chiller_tes_plant_controller.systemCommand)
-    annotation (Line(points={{-526,244},{164,244},{164,201.8},{168,201.8}},
+    annotation (Line(points={{-526,244},{-526,248},{-356,248},{-356,277.8}},
         color={255,127,0}));
   connect(junSecSup.port_2, Sensor_TCHWS.port_a) annotation (Line(points={{272,90},
           {302,90}},                       color={0,127,255}));
@@ -734,8 +691,6 @@ equation
           {516,-40},{520,-40},{520,-42},{526,-42}}, color={0,127,255}));
   connect(bou.ports[1], vol.ports[3]) annotation (Line(points={{510,-42},{512,
           -43.3333},{526,-43.3333}}, color={0,127,255}));
-  connect(fixHeaFlo.Q_flow, loaAct.y) annotation (Line(points={{584,50},{584,52},
-          {554,52}},                 color={0,0,127}));
   connect(Sensor_TCWR.port_b, cooTow.port_a) annotation (Line(points={{-336,
           -128},{-366,-128},{-366,14},{-348,14}}, color={0,127,255}));
   connect(Sensor_TCWR.port_a, expVesChi.port_a) annotation (Line(points={{-316,
@@ -822,49 +777,70 @@ equation
   connect(realExpression25.y, cooling_tower_thermal_power) annotation (Line(
         points={{1149,-1066},{1232,-1066},{1232,-1072},{1266,-1072}}, color={0,
           0,127}));
-  connect(cooling_load_ScaleDown_controller.cooling_load_scaling_factor, loaAct.u1)
-    annotation (Line(points={{670,-82},{688,-82},{688,-8},{512,-8},{512,58},{
-          530,58}}, color={0,0,127}));
   connect(temperatureSensor.T, cooling_load_ScaleDown_controller.hx_water_temperature)
-    annotation (Line(points={{593,-42},{624,-42},{624,-82},{646,-82}}, color={0,
+    annotation (Line(points={{599,-32},{616,-32},{616,38},{410,38},{410,11.6},{
+          444,11.6}},                                                  color={0,
           0,127}));
-  connect(temperatureSensor.T, conPID.u_m) annotation (Line(points={{593,-42},{
-          624,-42},{624,-112},{762,-112},{762,-2}}, color={0,0,127}));
-  connect(vol.heatPort, temperatureSensor.port) annotation (Line(points={{536,
-          -32},{560,-32},{560,-42},{572,-42}}, color={191,0,0}));
+  connect(vol.heatPort, temperatureSensor.port) annotation (Line(points={{536,-32},
+          {578,-32}},                          color={191,0,0}));
   connect(chiller_tes_plant_controller.systemMode, pump_flow_controller.systemMode)
-    annotation (Line(points={{180,206},{180,332},{216.824,332}}, color={255,127,
+    annotation (Line(points={{-332,270},{-328,269.657},{-259.176,269.657}},
+                                                                 color={255,127,
           0}));
-  connect(chi1.on, pump_flow_controller.chiller1On) annotation (Line(points={{
-          -53,0},{-52,0},{-52,340},{239.059,340}}, color={255,0,255}));
-  connect(chi2.on, pump_flow_controller.chiller2On) annotation (Line(points={{
-          -89,0},{-88,0},{-88,372},{250,372},{250,335.2},{239.059,335.2}},
+  connect(chi1.on, pump_flow_controller.chiller1On) annotation (Line(points={{-53,0},
+          {-53,8},{-40,8},{-40,40},{-16,40},{-16,288},{-236.941,288},{-236.941,
+          272.857}},                               color={255,0,255}));
+  connect(chi2.on, pump_flow_controller.chiller2On) annotation (Line(points={{-89,0},
+          {-89,16},{-112,16},{-112,120},{-312,120},{-312,240},{-236.941,240},{
+          -236.941,270.114}},
         color={255,0,255}));
   connect(pumCW2.m_flow_in, pump_flow_controller.mCon2_flow) annotation (Line(
-        points={{-156,-18},{-126,-18},{-126,321.6},{239.059,321.6}}, color={0,0,
+        points={{-156,-18},{-160,-18},{-160,-32},{-128,-32},{-128,96},{-96,96},
+          {-96,280},{-224,280},{-224,272},{-236.941,272},{-236.941,262.343}},
+                                                                     color={0,0,
           127}));
   connect(Pump_CHW_Primary2.m_flow_in, pump_flow_controller.mEva2_flow)
-    annotation (Line(points={{-92,-82},{-102,-82},{-102,328.4},{239.059,328.4}},
+    annotation (Line(points={{-92,-82},{-120,-82},{-120,88},{-328,88},{-328,208},
+          {-216,208},{-216,256},{-236.941,256},{-236.941,266.229}},
         color={0,0,127}));
-  connect(temperatureSensor.T, pump_flow_controller.hx_water_temperature)
-    annotation (Line(points={{593,-42},{600,-42},{600,-94},{618,-94},{618,422},
-          {146,422},{146,323.8},{216.824,323.8}}, color={0,0,127}));
-  connect(con2.y, pump_flow_controller.hx_water_temperature_setpoint)
-    annotation (Line(points={{41.8,401},{160,401},{160,352},{200,352},{200,
-          327.8},{216.824,327.8}}, color={0,0,127}));
   connect(pumCW1.m_flow_in, pump_flow_controller.mCon1_flow) annotation (Line(
-        points={{-160,32},{-184,32},{-184,444},{288,444},{288,324.8},{239.059,
-          324.8}}, color={0,0,127}));
+        points={{-160,32},{-184,32},{-184,104},{-128,104},{-128,128},{-176,128},
+          {-176,264.171},{-236.941,264.171}},
+                   color={0,0,127}));
   connect(Pump_CHW_Primary1.m_flow_in, pump_flow_controller.mEva1_flow)
-    annotation (Line(points={{-56,-82},{-56,331.6},{239.059,331.6}}, color={0,0,
+    annotation (Line(points={{-56,-82},{-56,-56},{-8,-56},{-8,268.057},{
+          -236.941,268.057}},                                        color={0,0,
           127}));
   connect(Pump_CHW_Bypass.m_flow_in, pump_flow_controller.mBypass_flow)
-    annotation (Line(points={{122,-54},{120,-54},{120,64},{168,64},{168,104},{
-          240,104},{240,136},{296,136},{296,240},{288,240},{288,317.8},{239.059,
-          317.8}}, color={0,0,127}));
+    annotation (Line(points={{122,-54},{136,-54},{136,312},{-248,312},{-248,280},
+          {-236.941,280},{-236.941,260.171}},
+                   color={0,0,127}));
   connect(Pump_CHW_Secondary.m_flow_in, pump_flow_controller.mSecondary_flow)
-    annotation (Line(points={{350,100},{350,208},{360,208},{360,272},{408,272},
-          {408,336},{296,336},{296,313},{239.176,313}}, color={0,0,127}));
+    annotation (Line(points={{350,100},{350,320},{-256,320},{-256,280},{
+          -236.824,280},{-236.824,257.429}},            color={0,0,127}));
+  connect(cooling_load_ScaleDown_controller.building_cooling_load_actual,
+    fixHeaFlo.Q_flow)
+    annotation (Line(points={{468,6},{484,6}}, color={0,0,127}));
+  connect(building_cooling_load, cooling_load_ScaleDown_controller.building_cooling_load)
+    annotation (Line(points={{-514,108},{-514,112},{-384,112},{-384,88},{-376,
+          88},{-376,-184},{400,-184},{400,0.6},{444,0.6}}, color={0,0,127}));
+  connect(con6.y, hx_water_pid_controller.hx_water_temperature_setpoint)
+    annotation (Line(points={{581.8,9},{640,9},{640,-22.6},{656,-22.6}}, color=
+          {0,0,127}));
+  connect(temperatureSensor.T, hx_water_pid_controller.hx_water_temperature)
+    annotation (Line(points={{599,-32},{599,-32.8},{656,-32.8}}, color={0,0,127}));
+  connect(hx_water_pid_controller.hx_water_pid_out, pump_flow_controller.hx_water_pid)
+    annotation (Line(points={{680,-28},{696,-28},{696,160},{360,160},{360,328},
+          {-272,328},{-272,259.257},{-259.059,259.257}}, color={0,0,127}));
+  connect(hx_water_pid_controller.hx_water_pid_out, load_request_controller.hx_water_pid)
+    annotation (Line(points={{680,-28},{680,-35.6},{714.4,-35.6}}, color={0,0,
+          127}));
+  connect(outside_air_temperature, load_request_controller.outside_air_temperature)
+    annotation (Line(points={{-534,186},{-536,186},{-536,440},{714,440},{714,
+          -24}}, color={0,0,127}));
+  connect(load_request_controller.loadRequest, chiller_tes_plant_controller.loadRequest)
+    annotation (Line(points={{738,-30},{764,-30},{764,176},{368,176},{368,336},
+          {-356,336},{-356,273.8}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-400,
             -160},{380,120}}),
                          graphics={Text(

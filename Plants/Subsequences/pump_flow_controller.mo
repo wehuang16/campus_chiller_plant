@@ -18,7 +18,7 @@ model pump_flow_controller
                                                    systemMode
     annotation (Placement(transformation(extent={{-20,-20},{20,20}},
         rotation=0,
-        origin={-120,0})));
+        origin={-120,24})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput chiller1On
     annotation (Placement(transformation(extent={{238,60},{278,100}})));
   Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput chiller2On
@@ -26,11 +26,11 @@ model pump_flow_controller
   Buildings.Controls.OBC.CDL.Integers.Equal chiller1OnBlock
     annotation (Placement(transformation(extent={{-32,64},{-12,84}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.Constant conInt(k=1)
-    annotation (Placement(transformation(extent={{-110,74},{-90,94}})));
+    annotation (Placement(transformation(extent={{-74,110},{-54,130}})));
   Buildings.Controls.OBC.CDL.Integers.Equal chiller2OnBlock
     annotation (Placement(transformation(extent={{-32,36},{-12,56}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.Constant conInt1(k=2)
-    annotation (Placement(transformation(extent={{-104,32},{-84,52}})));
+    annotation (Placement(transformation(extent={{-88,60},{-68,80}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput mEva1_flow
     annotation (Placement(transformation(extent={{238,-24},{278,16}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput mEva2_flow
@@ -55,24 +55,11 @@ model pump_flow_controller
     annotation (Placement(transformation(extent={{238,-162},{278,-122}})));
   Buildings.Controls.OBC.CDL.Interfaces.RealOutput mSecondary_flow
     annotation (Placement(transformation(extent={{240,-210},{280,-170}})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput hx_water_temperature
-    annotation (Placement(transformation(
+  Buildings.Controls.OBC.CDL.Interfaces.RealInput hx_water_pid annotation (
+      Placement(transformation(
         extent={{-20,-20},{20,20}},
         rotation=0,
-        origin={-120,-82})));
-  Buildings.Controls.OBC.CDL.Interfaces.RealInput hx_water_temperature_setpoint
-    annotation (Placement(transformation(
-        extent={{-20,-20},{20,20}},
-        rotation=0,
-        origin={-120,-42})));
-  Buildings.Controls.Continuous.LimPID conPID(
-    controllerType=Modelica.Blocks.Types.SimpleController.PI,
-    k=0.3,
-    Ti=150,
-    initType=Modelica.Blocks.Types.Init.InitialOutput,
-    y_start=0.2,
-    reverseActing=false)
-    annotation (Placement(transformation(extent={{-48,-62},{-28,-42}})));
+        origin={-118,-158})));
   Buildings.Controls.OBC.CDL.Reals.Multiply mul
     annotation (Placement(transformation(extent={{76,-22},{96,-2}})));
   Buildings.Controls.OBC.CDL.Reals.Multiply mul1
@@ -92,14 +79,17 @@ model pump_flow_controller
   Buildings.Controls.OBC.CDL.Reals.Multiply mul2
     annotation (Placement(transformation(extent={{100,-228},{120,-208}})));
 equation
-  connect(systemMode, chiller1OnBlock.u1) annotation (Line(points={{-120,0},{-44,
-          0},{-44,74},{-34,74}}, color={255,127,0}));
-  connect(conInt.y, chiller1OnBlock.u2) annotation (Line(points={{-88,84},{-42,84},
-          {-42,66},{-34,66}}, color={255,127,0}));
-  connect(systemMode, chiller2OnBlock.u1) annotation (Line(points={{-120,0},{-44,
-          0},{-44,46},{-34,46}}, color={255,127,0}));
-  connect(conInt1.y, chiller2OnBlock.u2) annotation (Line(points={{-82,42},{-42,
-          42},{-42,38},{-34,38}}, color={255,127,0}));
+  connect(systemMode, chiller1OnBlock.u1) annotation (Line(points={{-120,24},{
+          -82,24},{-82,42},{-46,42},{-46,74},{-34,74}},
+                                 color={255,127,0}));
+  connect(conInt.y, chiller1OnBlock.u2) annotation (Line(points={{-52,120},{-44,
+          120},{-44,76},{-42,76},{-42,66},{-34,66}},
+                              color={255,127,0}));
+  connect(systemMode, chiller2OnBlock.u1) annotation (Line(points={{-120,24},{
+          -82,24},{-82,42},{-46,42},{-46,46},{-34,46}},
+                                 color={255,127,0}));
+  connect(conInt1.y, chiller2OnBlock.u2) annotation (Line(points={{-66,70},{-48,
+          70},{-48,38},{-34,38}}, color={255,127,0}));
   connect(chiller1OnBlock.y, chiller1On) annotation (Line(points={{-10,74},{232,
           74},{232,80},{258,80}},
                              color={255,0,255}));
@@ -118,14 +108,6 @@ equation
   connect(chiller2OnBlock.y, booToRea3.u) annotation (Line(points={{-10,46},{48,
           46},{48,-38},{174,-38},{174,-90},{168,-90},{168,-106},{176,-106}},
         color={255,0,255}));
-  connect(hx_water_temperature_setpoint, conPID.u_s) annotation (Line(points={{-120,
-          -42},{-58,-42},{-58,-52},{-50,-52}}, color={0,0,127}));
-  connect(hx_water_temperature, conPID.u_m) annotation (Line(points={{-120,-82},
-          {-38,-82},{-38,-64}}, color={0,0,127}));
-  connect(conPID.y, mul.u2) annotation (Line(points={{-27,-52},{52,-52},{52,-18},
-          {74,-18}}, color={0,0,127}));
-  connect(conPID.y, mul1.u2) annotation (Line(points={{-27,-52},{-10,-52},{-10,-106},
-          {70,-106}}, color={0,0,127}));
   connect(booToRea.y, mul.u1)
     annotation (Line(points={{26,0},{64,0},{64,-6},{74,-6}}, color={0,0,127}));
   connect(mul.y, mEva1_flow) annotation (Line(points={{98,-12},{232,-12},{232,-4},
@@ -141,21 +123,28 @@ equation
   connect(conInt2.y, chiller2OnBlock1.u2) annotation (Line(points={{-54,18},{
           -46,18},{-46,4},{-48,4},{-48,-4},{-52,-4},{-52,-20},{-44,-20}}, color
         ={255,127,0}));
-  connect(systemMode, chiller2OnBlock1.u1) annotation (Line(points={{-120,0},{
-          -54,0},{-54,-12},{-44,-12}}, color={255,127,0}));
+  connect(systemMode, chiller2OnBlock1.u1) annotation (Line(points={{-120,24},{
+          -82,24},{-82,-12},{-44,-12}},color={255,127,0}));
   connect(chiller2OnBlock1.y, booToRea5.u) annotation (Line(points={{-20,-12},{
           -24,-12},{-24,-192},{46,-192},{46,-200}}, color={255,0,255}));
   connect(add2.y, mSecondary_flow) annotation (Line(points={{190,-196},{234,
           -196},{234,-190},{260,-190}}, color={0,0,127}));
-  connect(conPID.y, mul2.u2) annotation (Line(points={{-27,-52},{-24,-52},{-24,
-          -220},{98,-220},{98,-224}}, color={0,0,127}));
   connect(booToRea5.y, mul2.u1) annotation (Line(points={{70,-200},{90,-200},{
           90,-212},{98,-212}}, color={0,0,127}));
   connect(mul2.y, add2.u2) annotation (Line(points={{122,-218},{156,-218},{156,
           -202},{166,-202}}, color={0,0,127}));
   connect(mul.y, add2.u1) annotation (Line(points={{98,-12},{164,-12},{164,-180},
           {158,-180},{158,-190},{166,-190}}, color={0,0,127}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-            {240,100}})),                                        Diagram(
-        coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{240,100}})));
+  connect(hx_water_pid, mul.u2) annotation (Line(points={{-118,-158},{60,-158},
+          {60,-96},{62,-96},{62,-18},{74,-18}}, color={0,0,127}));
+  connect(hx_water_pid, mul1.u2) annotation (Line(points={{-118,-158},{60,-158},
+          {60,-106},{70,-106}}, color={0,0,127}));
+  connect(hx_water_pid, mul2.u2) annotation (Line(points={{-118,-158},{-26,-158},
+          {-26,-224},{98,-224}}, color={0,0,127}));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+            -250},{240,100}},
+        grid={2,2})),                                            Diagram(
+        coordinateSystem(preserveAspectRatio=false, extent={{-100,-250},{240,
+            100}},
+        grid={2,2})));
 end pump_flow_controller;

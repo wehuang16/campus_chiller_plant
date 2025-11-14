@@ -1,6 +1,7 @@
 within campus_chiller_plant.Validation;
 model chiller_tes_plant_controller_validation
-  Plants.Subsequences.chiller_tes_plant_controller chiller_tes_plant_controller
+  CCC_test.Bakersfield_Model.chiller_tes_plant_controller
+    chiller_tes_plant_controller
     annotation (Placement(transformation(extent={{-12,4},{8,24}})));
   Buildings.Controls.OBC.CDL.Integers.Sources.TimeTable intTimTab(
     table=[0,0; 6,5; 8,2; 15,4; 16,3; 21,1; 24,0],

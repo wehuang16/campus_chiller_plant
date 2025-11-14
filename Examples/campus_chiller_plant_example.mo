@@ -66,7 +66,7 @@ equation
   connect(dataTes.y[17], tank_average_temperature_experimental.u) annotation (
       Line(points={{-55,-18},{-36,-18},{-36,-66},{-74,-66},{-74,-80},{-64,-80}},
         color={0,0,127}));
-  connect(from_degC.y, campus_chiller_plant_fmu_v2_1.outdoor_air_temperature)
+  connect(from_degC.y,campus_chiller_plant_fmu_v2_1.outside_air_temperature)
     annotation (Line(points={{-72,42},{-60,42},{-60,70.6},{-49.4,70.6}}, color=
           {0,0,127}));
   connect(dataChiller.y[9], from_degC.u) annotation (Line(points={{35,-16},{40,
