@@ -328,11 +328,12 @@ model campus_chiller_plant "Put another chiller"
         origin={358,-310})));
   Buildings.Controls.OBC.CDL.Reals.MultiSum mulSum(nin=16)
     annotation (Placement(transformation(extent={{402,-320},{422,-300}})));
-  Modelica.Blocks.Math.Gain gai6(k=1/16) annotation (Placement(transformation(
+  Modelica.Blocks.Math.Gain tank_average_temperature_simulation(k=1/16)
+    annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
         origin={468,-310})));
-  Buildings.Controls.OBC.UnitConversions.To_degC tank_average_temperature_simulation
+  Buildings.Controls.OBC.UnitConversions.To_degC tank_average_temperature_celsius_simulation
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
@@ -618,8 +619,8 @@ equation
           {110,-44}},                             color={0,127,255}));
   connect(Pump_CHW_Bypass.port_b, junPriRet.port_3) annotation (Line(points={{110,-64},
           {110,-120}},                             color={0,127,255}));
-  connect(mulSum.y, gai6.u) annotation (Line(points={{424,-310},{456,-310}},
-                             color={0,0,127}));
+  connect(mulSum.y, tank_average_temperature_simulation.u)
+    annotation (Line(points={{424,-310},{456,-310}}, color={0,0,127}));
   connect(tempTan.T,mulSum. u)
     annotation (Line(points={{369,-310},{400,-310}},
                                                 color={0,0,127}));
@@ -632,8 +633,9 @@ equation
         points={{369,-310},{384,-310},{384,424},{-424,424},{-424,261.8},{-406,
           261.8}},                                                        color
         ={0,0,127}));
-  connect(gai6.y, tank_average_temperature_simulation.u) annotation (Line(
-        points={{479,-310},{508,-310}},                       color={0,0,127}));
+  connect(tank_average_temperature_simulation.y,
+    tank_average_temperature_celsius_simulation.u)
+    annotation (Line(points={{479,-310},{508,-310}}, color={0,0,127}));
   connect(Sensor_TCHW_supply_1.port_a, chi1.port_b2) annotation (Line(points={{-44,58},
           {-44,-2}},
                 color={0,127,255}));
